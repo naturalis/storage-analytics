@@ -4,24 +4,71 @@ The idea is to monitor data storage by collecting (starting on a daily basis) ba
 
 ## Format
 
+### `@timestamp`
 
+Simple: the timestamp of the log message.
 
-### `storage_type`
+### `host`
 
-Storage types refer to the kind of data is offered to (groups of) users (either humans or machines). We distinguish the following storage types:
-  * `local storage`
-  * `fileshare`
-  * `block storage`
-  * `object storage`
-  * `web storage`
-  * `backup storage`
+The full qualified domain name of the host from which the statistics is logged. Not necessarily the host on which data is stored.
 
-### `data_lifecycle_stage`
+### `data_name`
 
-In order te make a really rough distinction with regard to the data life cycle we use three basic stages (`data_lifecycle_stage`):
+The name of the specific set of data.
+
+### `data_id`
+
+An unique identifier for the specific set of data. For example the GUID of the resource group in Active Directory.
+
+### `data_status`
+
+In order to make a really rough distinction with regard to the status of data we use three basic statuses:
   * `preparation`
   * `production`
   * `archive`
+
+### `data_size`
+
+The total size in bytes of the data set.
+
+### `data_amount`
+
+The total amount of files or objects that is part of the data set.
+
+### `data_owner`
+
+The primary owner within the organization of the data set.
+
+### `data_groups_name`
+
+Array of the names of the groups within the organization that have access to the data set. For example the name of an *Active Directory* (AD) organization group.
+
+### `data_groups_id`
+
+Array of the unique identifiers of the groups within the organization that have access to the data set. For example the GUID of an Active Directory (AD) organization group.
+
+### `data_service`
+
+The service as part of which the data is stored. For example: `col` for Catalogue of Life.
+
+### `storage_id`
+
+The unique identifier for the specific storage location. For example the UUID of a volume in OpenStack.
+
+### `storage_path`
+
+The path to the location where the data set is stored. For example, in case of a file share; `smb://fs-smb-006.ad.naturalis.nl/groups/Automatisering`
+
+### `storage_type`
+
+Storage types refer to the type of data storage on which the data set is stored. We distinguish the following storage types:
+  * `local` (A directory on local storage of a physical machine)
+  * `fileshare` (A file share or network share. Typically a SMB/CIFS share)
+  * `block` (Block storage, typically volumes in OpenStack)
+  * `object` (Object storage, typically object store in OpenStack / Ceph)
+  * `database` (Any data that is stored in some form of database, either SQL or NoSQL)
+  * `web` (Data that is stored in some form of public cloud storage, for example Google Drive)
+  * `backup` (Data that is backupped by a dedicated backup program, i.e. Burp)
 
 ### `storage_location`
 
@@ -32,9 +79,9 @@ In order to aggregate statistics based on the storage location we use this forma
   * `google-drive` (Just an example of a specific external data store)
   * `external` (Generic term for storage on 'external' systems)
 
-### `ceph_pool`
+### `storage_pool`
 
-For data stored on Ceph we add the specific pool as well (`ceph_pool`):
+*Optional*. For data stored on Ceph we add the specific pool as well (`ceph_pool`):
   * `data`
   * `compute`
   * `images`
@@ -48,28 +95,26 @@ For data stored on Ceph we add the specific pool as well (`ceph_pool`):
 {
   "@timestamp": "2016-10-31T10:39:10.000Z",
   "host": "fs-smb-006.ad.naturalis.nl",
-  "name": "AUT",
-  "id": "",
+  "data_name": "AUT",
+  "data_id": "",
+  "data_status": "production",
+  "data_size": 13696468,
+  "data_amount": 13187,
+  "data_owner": "Automatisering",
+  "data_groups_name": [
+     "Automatisering",
+     "Infra"
+  ]
+  "data_groups_id": [
+    "3435-1254-1312-3223",
+    "5435-6254-4568-9253"
+  ]
+  "data_service": "",
+  "storage_id": "",
+  "storage_path": "smb://fs-smb-006.ad.naturalis.nl/groups/Automatisering",
   "storage_type": "fileshare",
   "storage_location": "primary-cluster-001",
-  "data_lifecycle_stage": "production",
-  "total_size": 13696468,
-  "total_files": 13187,
-  "path": "smb://fs-smb-006.ad.naturalis.nl/groups/Automatisering",
-  "ceph_pool": "data",
-  "owner": "Automatisering",
-  "ad_groups": [
-      {
-        "id": "2323-2323-1212-4223",
-        "name": "Automatisering"
-      },
-  ]
-    "user":
-      {
-        "id": "3435-1254-1312-3223",
-        "name": "natsysd"
-      }
-  ]
+  "storage_pool": "data"
 }
 ```
 
@@ -158,6 +203,38 @@ For data stored on Ceph we add the specific pool as well (`ceph_pool`):
   ]
 }
 ```
+
+### Database
+
+```json
+{
+  "@timestamp": "2016-10-31T10:39:10.000Z",
+  "host": "fs-smb-006.ad.naturalis.nl",
+  "name": "AUT",
+  "id": "",
+  "storage_type": "database",
+  "storage_location": "primary-cluster-001",
+  "data_lifecycle_stage": "production",
+  "total_size": 13696468,
+  "total_files": 13187,
+  "path": "smb://fs-smb-006.ad.naturalis.nl/groups/Automatisering",
+  "ceph_pool": "data",
+  "owner": "Automatisering",
+  "ad_groups": [
+      {
+        "id": "2323-2323-1212-4223",
+        "name": "Automatisering"
+      },
+  ]
+    "user":
+      {
+        "id": "3435-1254-1312-3223",
+        "name": "natsysd"
+      }
+  ]
+}
+```
+
 ### Backup storage
 
 ```json
