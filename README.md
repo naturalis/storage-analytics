@@ -22,7 +22,7 @@ An unique identifier for the specific set of data. For example the GUID of the r
 
 ### `data_status`
 
-In order to make a really rough distinction with regard to the status of data we use three basic statuses:
+In order to make a really rough distinction with regard to the status of data we use the following status indicators:
   * `preparation`
   * `production`
   * `archive`
@@ -35,9 +35,13 @@ The total size in bytes of the data set.
 
 The total amount of files or objects that is part of the data set.
 
-### `data_owner`
+### `data_owner_name`
 
-The primary owner within the organization of the data set.
+The name of the primary owner within the organization of the data set.
+
+### `data_owner_id`
+
+The unique identifier of the primary owner within the organization of the data set.
 
 ### `data_groups_name`
 
@@ -47,9 +51,13 @@ Array of the names of the groups within the organization that have access to the
 
 Array of the unique identifiers of the groups within the organization that have access to the data set. For example the GUID of an Active Directory (AD) organization group.
 
-### `data_service`
+### `data_host`
 
-The service as part of which the data is stored. For example: `col` for Catalogue of Life.
+The individual host or host cluster that is responsible for exposing the data set to users. For example, in case of a file share, the `data_host` equals the fileserver (i.e. `fs-smb-006.ad.naturalis.nl`). The `data_host` can equal `host`, but that is not necessarily the case.
+
+### `data_service_tags`
+
+Array of tags about the service as part of which the data is stored. For example: `nba`, `elasticsearch` and `dev` for data stored on an Elasticsearch node that is part of a development machine for the Netherlands Biodiversity API (NBA) or `fs` and `smb` for the file share example.
 
 ### `storage_id`
 
@@ -81,8 +89,8 @@ In order to aggregate statistics based on the storage location we use this forma
 
 ### `storage_pool`
 
-*Optional*. For data stored on Ceph we add the specific pool as well (`ceph_pool`):
-  * `data`
+The storage pool in Ceph:
+  * `buckets` (For all data in .rgw*)
   * `compute`
   * `images`
   * `volumes`
@@ -96,25 +104,21 @@ In order to aggregate statistics based on the storage location we use this forma
   "@timestamp": "2016-10-31T10:39:10.000Z",
   "host": "fs-smb-006.ad.naturalis.nl",
   "data_name": "AUT",
-  "data_id": "",
+  "data_id": "7f3201d3-73a8-4be6-b2b9-1223d2e5ee95",
   "data_status": "production",
   "data_size": 13696468,
   "data_amount": 13187,
-  "data_owner": "Automatisering",
-  "data_groups_name": [
-     "Automatisering",
-     "Infra"
-  ]
-  "data_groups_id": [
-    "3435-1254-1312-3223",
-    "5435-6254-4568-9253"
-  ]
-  "data_service": "",
+  "data_owner_name": "Automatisering",
+  "data_owner_id": "284f452a-618c-4583-b7c0-dc80dfe6bada",  
+  "data_groups_name": [ "Automatisering", "Infra" ],
+  "data_groups_id": [ "284f452a-618c-4583-b7c0-dc80dfe6bada", "b3c146a8-2ec1-492e-ad8a-3ab42b9db34c" ],
+  "data_host": "fs-smb-006.ad.naturalis.nl",
+  "data_service_tags": [ "fs", "smb" ],
   "storage_id": "",
   "storage_path": "smb://fs-smb-006.ad.naturalis.nl/groups/Automatisering",
   "storage_type": "fileshare",
   "storage_location": "primary-cluster-001",
-  "storage_pool": "data"
+  "storage_pool": "volumes"
 }
 ```
 
@@ -124,25 +128,22 @@ In order to aggregate statistics based on the storage location we use this forma
 {
   "@timestamp": "2016-10-31T10:45:10.000Z",
   "host": "dt001234.ad.naturalis.nl",
-  "name": "Scans",
-  "storage_type":"local storage",
-  "data_lifecycle_stage": "preparation",
+  "data_name": "Scans",
+  "data_id": "",
+  "data_status": "preparation",
+  "data_size": 29632,
+  "data_amount": 137,
+  "data_owner_name": "",
+  "data_owner_id": "",
+  "data_groups_name": [],
+  "data_groups_id": [],
+  "data_host": "dt001234.ad.naturalis.nl",
+  "data_service_tags": [],
+  "storage_id": "",
+  "storage_path": "smb://dt001234.ad.naturalis.nl/C$/Scans",
+  "storage_type": "local",
   "storage_location": "local",
-  "path": "smb://dt001234.ad.naturalis.nl/C$/Scans",
-  "size": 13696468,
-  "files": 13187,
-  "authorizations": [
-    "group":
-      {
-        "id": "2323-2323-1212-4223",
-        "name": "Automatisering"
-      }
-    "user":
-      {
-        "id": "3435-1254-1312-3223",
-        "name": "natsysd"
-      }
-  ]
+  "storage_pool": ""
 }
 ```
 
@@ -150,57 +151,24 @@ In order to aggregate statistics based on the storage location we use this forma
 
 ```json
 {
-  "@timestamp": "2016-10-31T10:45:10.000Z",
-  "host": "dt001234.ad.naturalis.nl",
-  "name": "Scans",
-  "storage_type": "block storage",
-  "data_lifecycle_stage": "production",
+  "@timestamp": "2016-10-31T10:39:10.000Z",
+  "host": "fs-smb-006.ad.naturalis.nl",
+  "data_name": "Dikke schijf",
+  "data_id": "",
+  "data_status": "production",
+  "data_size": 13696468,
+  "data_amount": 13187,
+  "data_owner_name": "Automatisering",
+  "data_owner_id": "284f452a-618c-4583-b7c0-dc80dfe6bada",  
+  "data_groups_name": [ "Automatisering", "Infra" ],
+  "data_groups_id": [ "284f452a-618c-4583-b7c0-dc80dfe6bada", "b3c146a8-2ec1-492e-ad8a-3ab42b9db34c" ],
+  "data_host": "primary-cluster-001",
+  "data_service_tags": [ "fs", "smb", "fs-smb-006" ],
+  "storage_id": "123223-dfea21-123435-123212",
+  "storage_path": "",
+  "storage_type": "block",
   "storage_location": "primary-cluster-001",
-  "ceph_pool": "volumes",
-  "size": 13696468,
-  "volume_id": "123223-dfea21-123435-123212",
-  "authorizations": [
-    "group":
-      {
-        "id": "2323-2323-1212-4223",
-        "name": "Automatisering"
-      }
-    "user":
-      {
-        "id": "3435-1254-1312-3223",
-        "name": "natsysd"
-      }
-  ]
-}
-```
-
-```json
-{
-  "@timestamp": "2016-10-31T10:45:10.000Z",
-  "host": "dt001234.ad.naturalis.nl",
-  "name": "Dikke schijf",
-  "id": "c03012-1232dfe-1212457-ba03241",
-  "storage": {
-    "type": "local storage",
-    "stage": "preparation",
-    "place": "primary",
-    "pool": "nonshared"
-  },
-  "path": "",
-  "size": 13696468,
-  "files": 1,
-  "authorizations": [
-    "group":
-      {
-        "id": "2323-2323-1212-4223",
-        "name": "Automatisering"
-      }
-    "user":
-      {
-        "id": "3435-1254-1312-3223",
-        "name": "natsysd"
-      }
-  ]
+  "storage_pool": "volumes"
 }
 ```
 
@@ -209,29 +177,23 @@ In order to aggregate statistics based on the storage location we use this forma
 ```json
 {
   "@timestamp": "2016-10-31T10:39:10.000Z",
-  "host": "fs-smb-006.ad.naturalis.nl",
-  "name": "AUT",
-  "id": "",
+  "host": "nba-elasticsearch-dev-003.stack.naturalis.nl",
+  "data_name": "Dikke schijf",
+  "data_id": "",
+  "data_status": "production",
+  "data_size": 6566668,
+  "data_amount": 13187,
+  "data_owner_name": "Software Development",
+  "data_owner_id": "bd46682b-73cb-4d96-a752-dc7cc03b02c6",  
+  "data_groups_name": [ "Software Development" ],
+  "data_groups_id": [ "bd46682b-73cb-4d96-a752-dc7cc03b02c6" ],
+  "data_host": "nba-elasticsearch-dev-003.pc.naturalis.nl",
+  "data_service_tags": [ "nba", "elasticsearch", "dev", "nba-elasticsearch-dev-003" ],
+  "storage_id": "9c9ab56c-f079-4013-913f-20ef7a687749",
+  "storage_path": "",
   "storage_type": "database",
   "storage_location": "primary-cluster-001",
-  "data_lifecycle_stage": "production",
-  "total_size": 13696468,
-  "total_files": 13187,
-  "path": "smb://fs-smb-006.ad.naturalis.nl/groups/Automatisering",
-  "ceph_pool": "data",
-  "owner": "Automatisering",
-  "ad_groups": [
-      {
-        "id": "2323-2323-1212-4223",
-        "name": "Automatisering"
-      },
-  ]
-    "user":
-      {
-        "id": "3435-1254-1312-3223",
-        "name": "natsysd"
-      }
-  ]
+  "storage_pool": "volumes"
 }
 ```
 
@@ -239,30 +201,23 @@ In order to aggregate statistics based on the storage location we use this forma
 
 ```json
 {
-  "@timestamp": "2016-10-31T10:45:10.000Z",
-  "host": "dt001234.ad.naturalis.nl",
-  "name": "Dikke schijf",
-  "id": "c03012-1232dfe-1212457-ba03241",
-  "storage": {
-    "type": "backup storage",
-    "stage": "production",
-    "place": "backup-cluster-001",
-    "pool": "backups"
-  },
-  "path": "",
-  "size": 13696468,
-  "files": 1,
-  "authorizations": [
-    "group":
-      {
-        "id": "2323-2323-1212-4223",
-        "name": "Automatisering"
-      }
-    "user":
-      {
-        "id": "3435-1254-1312-3223",
-        "name": "natsysd"
-      }
-  ]
+  "@timestamp": "2016-10-31T10:39:10.000Z",
+  "host": "burp-server-001",
+  "data_name": "Dikke schijf",
+  "data_id": "",
+  "data_status": "production",
+  "data_size": 76446548,
+  "data_amount": 1858334,
+  "data_owner_name": "",
+  "data_owner_id": "",
+  "data_groups_name": [ "Software Development" ],
+  "data_groups_id": [ "bd46682b-73cb-4d96-a752-dc7cc03b02c6" ],
+  "data_host": "burp-server-001.bc.naturalis.nl",
+  "data_service_tags": [ "fs", "smb", "fs-smb-006" ],
+  "storage_id": "9c9ab56c-f079-4013-913f-20ef7a687749",
+  "storage_path": "",
+  "storage_type": "database",
+  "storage_location": "primary-cluster-001",
+  "storage_pool": "volumes"
 }
 ```
