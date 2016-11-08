@@ -10,21 +10,17 @@ Simple: the timestamp of the log message.
 
 ### `host`
 
-The full qualified domain name of the host from which the statistics is logged. Not necessarily the host on which data is stored.
+The full qualified domain name of the host from which the statistics are logged. Not necessarily the host on which data is stored.
 
-### `data_name`
+### `data_set`
 
-The name of the specific set of data.
-
-### `data_id`
-
-An unique identifier for the specific set of data. For example the GUID of the resource group in Active Directory.
+The name and unique identifier for the specific set of data. For example the name and GUID of the resource group in Active Directory.
 
 ### `data_status`
 
 In order to make a really rough distinction with regard to the status of data we use the following status indicators:
-  * `preparation`
-  * `production`
+  * `temp`
+  * `current`
   * `archive`
 
 ### `data_size`
@@ -35,21 +31,13 @@ The total size in bytes of the data set.
 
 The total amount of files or objects that is part of the data set.
 
-### `data_owner_name`
+### `data_owner`
 
-The name of the primary owner within the organization of the data set.
+The name and unique identifier of the primary owner within the organization of the data set.
 
-### `data_owner_id`
+### `data_groups`
 
-The unique identifier of the primary owner within the organization of the data set.
-
-### `data_groups_name`
-
-Array of the names of the groups within the organization that have access to the data set. For example the name of an *Active Directory* (AD) organization group.
-
-### `data_groups_id`
-
-Array of the unique identifiers of the groups within the organization that have access to the data set. For example the GUID of an Active Directory (AD) organization group.
+Array of the names and unique identifiers of the groups within the organization that have access to the data set. For example the name and GUID of an *Active Directory* (AD) organization group.
 
 ### `data_host`
 
@@ -76,7 +64,7 @@ Storage types refer to the type of data storage on which the data set is stored.
   * `object` (Object storage, typically object store in OpenStack / Ceph)
   * `database` (Any data that is stored in some form of database, either SQL or NoSQL)
   * `web` (Data that is stored in some form of public cloud storage, for example Google Drive)
-  * `backup` (Data that is backupped by a dedicated backup program, i.e. Burp)
+  * `backup` (Data that is backed up by a dedicated backup program, i.e. Burp)
 
 ### `storage_location`
 
@@ -103,15 +91,15 @@ The storage pool in Ceph:
 {
   "@timestamp": "2016-10-31T10:39:10.000Z",
   "host": "fs-smb-006.ad.naturalis.nl",
-  "data_name": "AUT",
-  "data_id": "7f3201d3-73a8-4be6-b2b9-1223d2e5ee95",
+  "data_set": { "name": "AUT", "id": "7f3201d3-73a8-4be6-b2b9-1223d2e5ee95" },
   "data_status": "production",
   "data_size": 13696468,
   "data_amount": 13187,
-  "data_owner_name": "Automatisering",
-  "data_owner_id": "284f452a-618c-4583-b7c0-dc80dfe6bada",  
-  "data_groups_name": [ "Automatisering", "Infra" ],
-  "data_groups_id": [ "284f452a-618c-4583-b7c0-dc80dfe6bada", "b3c146a8-2ec1-492e-ad8a-3ab42b9db34c" ],
+  "data_owner": { "name": "Automatisering", "id": "284f452a-618c-4583-b7c0-dc80dfe6bada" },  
+  "data_groups": [
+    { "name": "Automatisering", "id": "284f452a-618c-4583-b7c0-dc80dfe6bada" },
+    { "name": "Infra", "id": "b3c146a8-2ec1-492e-ad8a-3ab42b9db34c" }
+  ],
   "data_host": "fs-smb-006.ad.naturalis.nl",
   "data_service_tags": [ "fs", "smb" ],
   "storage_id": "",
@@ -128,15 +116,12 @@ The storage pool in Ceph:
 {
   "@timestamp": "2016-10-31T10:45:10.000Z",
   "host": "dt001234.ad.naturalis.nl",
-  "data_name": "Scans",
-  "data_id": "",
+  "data_set": { "name": "Scans", "id": "" },
   "data_status": "preparation",
   "data_size": 29632,
   "data_amount": 137,
-  "data_owner_name": "",
-  "data_owner_id": "",
-  "data_groups_name": [],
-  "data_groups_id": [],
+  "data_owner": {},
+  "data_groups": [],
   "data_host": "dt001234.ad.naturalis.nl",
   "data_service_tags": [],
   "storage_id": "",
@@ -153,15 +138,15 @@ The storage pool in Ceph:
 {
   "@timestamp": "2016-10-31T10:39:10.000Z",
   "host": "fs-smb-006.ad.naturalis.nl",
-  "data_name": "Dikke schijf",
-  "data_id": "",
+  "data_set": { "name": "Dikke schijf", "id": "" },
   "data_status": "production",
   "data_size": 13696468,
   "data_amount": 13187,
-  "data_owner_name": "Automatisering",
-  "data_owner_id": "284f452a-618c-4583-b7c0-dc80dfe6bada",  
-  "data_groups_name": [ "Automatisering", "Infra" ],
-  "data_groups_id": [ "284f452a-618c-4583-b7c0-dc80dfe6bada", "b3c146a8-2ec1-492e-ad8a-3ab42b9db34c" ],
+  "data_owner": { "name": "Automatisering", "id": "284f452a-618c-4583-b7c0-dc80dfe6bada" },
+  "data_groups": [
+    { "name": "Automatisering", "id": "284f452a-618c-4583-b7c0-dc80dfe6bada" },
+    { "name": "Infra", "id": "b3c146a8-2ec1-492e-ad8a-3ab42b9db34c" }
+  ],
   "data_host": "primary-cluster-001",
   "data_service_tags": [ "fs", "smb", "fs-smb-006" ],
   "storage_id": "123223-dfea21-123435-123212",
@@ -178,15 +163,15 @@ The storage pool in Ceph:
 {
   "@timestamp": "2016-10-31T10:39:10.000Z",
   "host": "nba-elasticsearch-dev-003.stack.naturalis.nl",
-  "data_name": "Dikke schijf",
+  "data_set": { "name": "NBAv2", "id": "" },
   "data_id": "",
   "data_status": "production",
   "data_size": 6566668,
   "data_amount": 13187,
-  "data_owner_name": "Software Development",
-  "data_owner_id": "bd46682b-73cb-4d96-a752-dc7cc03b02c6",  
-  "data_groups_name": [ "Software Development" ],
-  "data_groups_id": [ "bd46682b-73cb-4d96-a752-dc7cc03b02c6" ],
+  "data_owner": { "name": "Software Development", "id": "bd46682b-73cb-4d96-a752-dc7cc03b02c6" },
+  "data_groups": [
+    { "name": "Software Development", "id": "bd46682b-73cb-4d96-a752-dc7cc03b02c6" }
+  ],
   "data_host": "nba-elasticsearch-dev-003.pc.naturalis.nl",
   "data_service_tags": [ "nba", "elasticsearch", "dev", "nba-elasticsearch-dev-003" ],
   "storage_id": "9c9ab56c-f079-4013-913f-20ef7a687749",
@@ -203,15 +188,15 @@ The storage pool in Ceph:
 {
   "@timestamp": "2016-10-31T10:39:10.000Z",
   "host": "burp-server-001",
-  "data_name": "Dikke schijf",
+  "data_set": { "name": "Backup Dikke schijf", "id": "" },
   "data_id": "",
   "data_status": "production",
   "data_size": 76446548,
   "data_amount": 1858334,
-  "data_owner_name": "",
-  "data_owner_id": "",
-  "data_groups_name": [ "Software Development" ],
-  "data_groups_id": [ "bd46682b-73cb-4d96-a752-dc7cc03b02c6" ],
+  "data_owner": {},
+  "data_groups": [
+    { "name": "Software Development", "id": "bd46682b-73cb-4d96-a752-dc7cc03b02c6" }
+  ],
   "data_host": "burp-server-001.bc.naturalis.nl",
   "data_service_tags": [ "fs", "smb", "fs-smb-006" ],
   "storage_id": "9c9ab56c-f079-4013-913f-20ef7a687749",
