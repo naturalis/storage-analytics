@@ -1,10 +1,10 @@
 configfilename = 'config.ini'
 
-import ConfigParser
+import configparser
 from . import log
 
 def get(setting,section='Default'):
-	config = ConfigParser.RawConfigParser()
+	config = configparser.RawConfigParser()
 	try:
 		config.read(configfilename)
 	except Exception as e:
