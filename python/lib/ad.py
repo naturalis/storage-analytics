@@ -103,16 +103,46 @@ def groups_in_group(conn,groupname):
     Returns array of groups
     """
     groups = []
-    conn.search(attributes=['Name'],
+    conn.search(attributes=['Name','objectGUID'],
                 search_base='dc=nnm,dc=local',
                 search_filter='(&(objectclass=group)(memberOf:1.2.840.113556.1.4.1941:=CN='+groupname+',OU=Mappen,OU=Resources,OU=Groepen,DC=nnm,DC=local))')
     for g in conn.entries:
-        groups.append(str(g['Name']))
+        groups.append({'name': str(g['Name']),'id':str(g['objectGUID'])})
         # if str(g['Name'])[:12] == 'Openstack - ':
         #     groups.append(str(g['Name']))
         # else:
         #     log.logger.warning("%s is not a good group name. Should start with 'Openstack - '" % g['Name'])
     return groups
+
+def group_info(conn,groupname,fields=[]):
+    conn.search(attributes=fields,
+                search_base='ou=groepen,dc=nnm,dc=local',
+                search_filter='(&(objectclass=group)(CN='+groupname+'))')
+    if len(conn.entries) > 1:
+        return 'multipe groups found'
+    elif len(conn.entries) == 0:
+        return 'group not found'
+    else:
+        keys = fields
+        values = []
+        for f in fields:
+            values.append(str(conn.entries[0][f]))
+        return dict(zip(keys,values))
+
+def user_info(conn,username,fields=[]):
+    conn.search(attributes=fields,
+                search_base='ou=NNM Users,dc=nnm,dc=local',
+                search_filter='(&(objectclass=group)(CN='+username+'))')
+    if len(conn.entries) > 1:
+        return 'multipe users found'
+    elif len(conn.entries) == 0:
+        return 'user not found'
+    else:
+        keys = fields
+        values = []
+        for f in fields:
+            values.append(str(conn.entries[0][f]))
+        return dict(zip(keys,values))
 
 def gather_ad_groups(conn):
     """
