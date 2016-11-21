@@ -1,15 +1,22 @@
-from keystoneclient.auth.identity import v2
+from keystoneclient.auth.identity import v3
 from keystoneclient import session
-from novaclient import client
+from keystoneclient.v3 import client
+from os import urandom
+from string import ascii_letters, digits
 from . import log
 
+class KeyStone:
+    def __init__(self,auth_url,ks_username,ks_password,project_name,cacert):
+        auth = v3.Password(auth_url=auth_url,
+                           username=ks_username,
+                           password=ks_password,
+                           project_name='admin',
+                           user_domain_name='Default',
+                           project_domain_id='Default')
 
-class Nova():
-
-    def __init__(self,auth_url,username,password,tenant_name,cacert):
-        auth = v2.Password(auth_url=auth_url,
-                           username=username,
-                           password=password,
-                           tenant_name=tenant_name)
         sess = session.Session(auth=auth,verify=cacert)
-        self.nova = client.Client("2",session=sess)
+        self.ksclient = client.Client(session=sess)
+        self.member_role_id = self.ksclient.roles.list(name='_member_')[0].id
+
+        log.logger.debug("enumbering access for groups in projects")
+        self.grouplist = self.ksclient.groups.list()

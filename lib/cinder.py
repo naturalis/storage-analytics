@@ -10,6 +10,6 @@ class Cinder():
         auth = v2.Password(auth_url=auth_url,
                            username=username,
                            password=password,
-                           tenant_name=tenant_name)
+                           tenant_name='admin')
         sess = session.Session(auth=auth,verify=cacert)
         self.cinder = client.Client("2",session=sess)
