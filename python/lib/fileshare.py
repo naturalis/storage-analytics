@@ -20,10 +20,10 @@ def ShareInfo(folder,c):
     if share_type == 'groups' and folder_owner is not 'Map resource not found':
         group_access = ad.groups_in_group(c,folder_owner)
     data_owner = {}
-    if share_type == 'homedir' and isinstance(folder_owner,dict):
-        do = ad.user_info(c,folder_owner,['name','objectGUID'])
+    if share_type == 'homedir' and folder_owner is not 'User not found':
+        do = ad.user_info(c,folder_owner,['userPrincipalName','objectGUID'])
         if isinstance(do,dict):
-            data_owner = {'name':do['name'],'id':do['objectGUID']}
+            data_owner = {'name':do['userPrincipalName'],'id':do['objectGUID']}
 
     ds = ad.group_info(c,folder_owner,['name','objectGUID'])
     dataset = {}
@@ -114,7 +114,7 @@ def _getFolderOwner(folder,share_type):
         for i in out.split('\n'):
             # owner: NNM\134hans.kruijer
             if i.startswith('# owner:'):
-                owner.append(i[13:])
+                owner.append(str(i[13:]))
         return owner[0]
     elif share_type == 'groups':
         for i in out.split('\n'):

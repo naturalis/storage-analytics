@@ -131,18 +131,22 @@ def group_info(conn,groupname,fields=[]):
 
 def user_info(conn,username,fields=[]):
     conn.search(attributes=fields,
-                search_base='ou=NNM Users,dc=nnm,dc=local',
-                search_filter='(&(objectclass=group)(CN='+username+'))')
-    if len(conn.entries) > 1:
-        return 'multipe users found'
-    elif len(conn.entries) == 0:
-        return 'user not found'
-    else:
+                search_base='dc=nnm,dc=local',
+                search_filter='(&(objectclass=user)(sAMAccountName='+username[3:]+'))')
+    if len(conn.entries) > 0:
         keys = fields
         values = []
         for f in fields:
             values.append(str(conn.entries[0][f]))
         return dict(zip(keys,values))
+    # if len(conn.entries) > 1:
+    #     return 'multipe users found'
+    # elif len(conn.entries) == 0:
+    #     print conn.entries
+    #     return 'user not found'
+    else:
+        return 'User not found'
+
 
 def gather_ad_groups(conn):
     """

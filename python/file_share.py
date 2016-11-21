@@ -2,7 +2,7 @@
 
 import json
 import os
-
+#import pprint
 from lib import ad as ad
 from lib import log as log
 from lib import config as config
@@ -22,6 +22,7 @@ c = ad.connect(host,domain+user,password)
 
 if c.bind():
     log.logger.info('Checking usage of share %s' % _SHARE)
+    #pprint.pprint(fs.ShareInfo('/data/Hans.Kruijer',c))
     for d in os.listdir(_SHARE):
         if os.path.isdir(os.path.join(_SHARE,d)):
             with open(_JSON_LOCATION,'a') as jsonfile:
