@@ -11,7 +11,7 @@ from email.mime.text import MIMEText
 
 
 class KeyStone:
-    def __init__(self,auth_url,ks_username,ks_password,project_name):
+    def __init__(self,auth_url,ks_username,ks_password,project_name,ca_bundle):
         auth = v3.Password(auth_url=auth_url,
                            username=ks_username,
                            password=ks_password,
@@ -19,7 +19,7 @@ class KeyStone:
                            user_domain_name='Default',
                            project_domain_id='Default')
 
-        sess = session.Session(auth=auth)
+        sess = session.Session(auth=auth,verify=ca_bundle)
         self.ksclient = client.Client(session=sess)
         self.member_role_id = self.ksclient.roles.list(name='_member_')[0].id
 
