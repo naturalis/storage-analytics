@@ -2,9 +2,9 @@
 
 # Script to get stats about block storage managed by OpenStack Cinder
 
-from lib import KeyStone
-from lib import Nova
-from lib.cinder import Cinder
+from lib import keystone
+from lib import nova
+from lib import cinder
 from lib import log
 from lib import config
 
