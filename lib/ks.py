@@ -206,3 +206,14 @@ def sendaccountmail(to,username,password):
     s = smtplib.SMTP('aspmx.l.google.com')
     s.sendmail('noreply@naturalis.nl',[to],msg.as_string())
     s.quit()
+
+def list_projects(client):
+    """
+    List all projects in OpenStack
+    * Needs client object
+    Returns array with objects containing name and id
+    """
+    payload = []
+    for p in client.projects.list():
+        payload.append({'id': p.id, 'name': p.name})
+    return payload
