@@ -2,8 +2,8 @@
 
 # Script to get stats about block storage managed by OpenStack Cinder
 
-from lib.keystone import Keystone
-from lib.nova import Nova
+from lib import KeyStone
+from lib import Nova
 from lib.cinder import Cinder
 from lib import log
 from lib import config
@@ -19,7 +19,6 @@ ca_bundle = config.get('ca_bundle_file')
 
 ### End Settings
 ### start API's
-ks_c = Keystone.connect(auth_url,ks_username,ks_password,project_name,ca_bundle)
+keystone = KeyStone(auth_url,ks_username,ks_password,project_name,ca_bundle)
 #nova = Nova(auth_url_v2,ks_username,ks_password,project_name,ca_bundle)
 #cinder = Cinder(auth_url_v2,ks_username,ks_password,project_name,ca_bundle)
-print Keystone.list_projects(ks_c)

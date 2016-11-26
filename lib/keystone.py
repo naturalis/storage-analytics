@@ -121,3 +121,13 @@ class KeyStone:
         : param str projectname: name of the project
         """
         return self.ksclient.projects.list(name=projectname)[0].id
+
+    def list_projects(self):
+        """
+        List all projects in OpenStack
+        Returns array with objects containing name and id
+        """
+        payload = []
+        for p in self.ksclient.projects.list():
+            payload.append({'id': p.id, 'name': p.name})
+        return payload
