@@ -95,7 +95,7 @@ The storage pool in Ceph:
   "data_status": "production",
   "data_size": 13696468,
   "data_amount": 13187,
-  "data_owner": { "name": "Automatisering", "id": "284f452a-618c-4583-b7c0-dc80dfe6bada" },  
+  "data_owner": { "name": "Automatisering", "id": "284f452a-618c-4583-b7c0-dc80dfe6bada" },
   "data_groups": [
     { "name": "Automatisering", "id": "284f452a-618c-4583-b7c0-dc80dfe6bada" },
     { "name": "Infra", "id": "b3c146a8-2ec1-492e-ad8a-3ab42b9db34c" }
