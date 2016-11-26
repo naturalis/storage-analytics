@@ -5,16 +5,16 @@ from . import log
 from . import ad
 
 
-def ShareInfo(folder,c):
+def share_info(folder,c):
     """
     Gathers information and statistics of a AD sharded folder
     * Path of dir
     * AD connection object
     Returns a dict with statistics
     """
-    total = _getFolderSize(folder)
-    share_type = _getShareType(folder)
-    folder_owner = _getFolderOwner(folder,share_type)
+    total = _get_folder_size(folder)
+    share_type = _get_share_type(folder)
+    folder_owner = _get_folder_owner(folder,share_type)
 
     group_access = {}
     if share_type == 'groups' and folder_owner is not 'Map resource not found':
@@ -47,7 +47,7 @@ def ShareInfo(folder,c):
                  }
     return json_dict
 
-def _getFolderSize(path):
+def _get_folder_size(path):
     """
     Private: get folder size
     * Path of dir
@@ -67,7 +67,7 @@ def _getFolderSize(path):
     return { 'size':TotalSize,'count':TotalCount}
 
 
-def _findTopTen(current,candidate,size=10):
+def _find_top_ten(current,candidate,size=10):
     """
     Private: find top ten highest numbers
     * current list
@@ -86,7 +86,7 @@ def _findTopTen(current,candidate,size=10):
 
     return current
 
-def _getShareType(folder):
+def _get_share_type(folder):
     """
     Private: get share type (homedir or group share)
     * Path of dir
@@ -100,7 +100,7 @@ def _getShareType(folder):
             share_tp.append(i)
     return share_tp[0]
 
-def _getFolderOwner(folder,share_type):
+def _get_folder_owner(folder,share_type):
     """
     Private: get owner of folder
     * Path of dir
