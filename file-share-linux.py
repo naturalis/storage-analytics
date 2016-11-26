@@ -17,7 +17,7 @@ domain = config.get('ad_domain') + '\\'
 to_address = config.get('account_mail_to')
 host = config.get('ad_host')
 share = config.get('share_folder','fileshare')
-json_location = config.get('json_location','fileshare')
+json_location = config.get('output_file','fileshare')
 
 c = ad.connect(host,domain+user,password)
 
