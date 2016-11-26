@@ -14,7 +14,7 @@ formatter = logging.Formatter('%(asctime)s - %(levelname)s\t- %(module)s::%(func
 #logger.setFormatter(formatter)
 
 if filehandler:
-	fh = logging.FileHandler('storage-analytics.log')
+	fh = logging.FileHandler('adsync.log')
 	fh.setLevel(level)
 	fh.setFormatter(formatter)
 	logger.addHandler(fh)
