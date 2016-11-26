@@ -13,3 +13,6 @@ ks_ad_group_sync_id = ae41c863c3474201957e330885deda5e
 [fileshare]
 share_folder = /data
 output_file = /var/log/storage-analytics.json
+
+[block_storage_cinder]
+output_file = /tmp/volumeinfo.json
