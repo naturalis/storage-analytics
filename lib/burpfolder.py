@@ -3,7 +3,7 @@ from os.path import join, getsize, isfile, isdir, splitext
 import socket, datetime, pprint
 from . import log
 
-def buro_folder_info(folder,c):
+def burp_folder_info(folder):
     """
     Gathers information and statistics of a AD sharded folder
     * Path of dir
@@ -23,8 +23,9 @@ def buro_folder_info(folder,c):
                  'storage_location': 'primary-cluster-001',
                  'data_status': 'production',
                  'data_host': socket.getfqdn(),
-                 'storage_path' : 'smb://%s/%s/%s' % (socket.getfqdn(),share_type,folder.split('/')[-1]),
-                 'data_service_tags' : [socket.gethostname().split('-')[0],socket.gethostname().split('-')[1]]
+                 'storage_path': folder,
+#                 'storage_path' : 'smb://%s/%s/%s' % (socket.getfqdn(),share_type,folder.split('/')[-1]),
+#                 'data_service_tags' : [socket.gethostname().split('-')[0],socket.gethostname().split('-')[1]]
                  }
     return json_dict
 
