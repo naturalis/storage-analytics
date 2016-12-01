@@ -18,14 +18,15 @@ def burp_folder_info(folder):
 #                 'data_set':dataset,
 #                 'data_groups': group_access,
 #                 'data_owner': data_owner,
-                 'storage_type': 'fileshare',
+                 'storage_type': 'backup',
                  'storage_pool': 'volumes',
-                 'storage_location': 'primary-cluster-001',
+                 'storage_location': 'backup-cluster-001',
                  'data_status': 'production',
                  'data_host': socket.getfqdn(),
                  'storage_path': folder,
 #                 'storage_path' : 'smb://%s/%s/%s' % (socket.getfqdn(),share_type,folder.split('/')[-1]),
 #                 'data_service_tags' : [socket.gethostname().split('-')[0],socket.gethostname().split('-')[1]]
+                 'data_service_tags' : [folder.split('-')[0],folder.split('-')[1]]
                  }
     return json_dict
 
