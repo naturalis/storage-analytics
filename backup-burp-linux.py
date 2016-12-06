@@ -11,11 +11,11 @@ from lib import fileshare as fs
 #_SHARE = '/data'
 #_JSON_LOCATION = '/tmp/stats.json'
 
-user = config.get('ad_user')
-password = config.get('ad_password')
-domain = config.get('ad_domain') + '\\'
-to_address = config.get('account_mail_to')
-host = config.get('ad_host')
+# user = config.get('ad_user')
+# password = config.get('ad_password')
+# domain = config.get('ad_domain') + '\\'
+# to_address = config.get('account_mail_to')
+# host = config.get('ad_host')
 share = config.get('share_folder','fileshare')
 json_location = config.get('output_file','fileshare')
 
