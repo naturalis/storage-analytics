@@ -82,7 +82,7 @@ class BurpServer:
         Returns extra information of the backup
         """
         extra_info = {}
-        with open(os.path.join(folder,backup_stats)) as f:
+        with open(os.path.join(folder,'backup_stats')) as f:
             content = f.readlines()
             for c in content:
                 if any(c.startswith(x) for x in attributes):
