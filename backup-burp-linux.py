@@ -1,6 +1,6 @@
 #!/usr/bin/python2.7
 
-import json
+import json, sys
 from lib.burpserver import BurpServer
 
 checkfolder = sys.argv[1]
