@@ -34,6 +34,7 @@ class BurpServer:
             separate_sizes.append(stat)
             total_size = total_size + stat['size']
             total_count = total_count + stat['count']
+            
         return {'backuped_server': self.target_server, 'size' : total_size, 'count' : total_count, 'separate_sizes': separate_sizes }
 
 
@@ -72,6 +73,22 @@ class BurpServer:
                 except:
                     log.logger.debug('Error with file: %s  ' % os.path.join(item[0], file))
         return { 'size':TotalSize,'count':TotalCount}
+
+    def __get_backup_info(self,folder,attributes=['bytes_received','bytes_in_backup','bytes_estimated','total_total','total_changed','total_deleted']):
+        """
+        Private
+        * Foldername of the backup
+        Returns extra information of the backup
+        """
+        extra_info = {}
+        with open(os.path.join(folder,backup_stats)) as f:
+            content = f.readlines()
+            for c in content:
+                if any(c.startswith(x) for x in attributes):
+                    key, val = c.split('')
+                    extra_info[key] = val
+        return extra_info
+
 # def share_info(folder,c):
 #     """
 #     Gathers information and statistics of a AD sharded folder
