@@ -1,6 +1,6 @@
 #!/usr/bin/python2.7
 
-import json, sys
+import json, sys, os
 from lib.burpserver import BurpServer
 
 checkfolder = sys.argv[1]
@@ -17,6 +17,7 @@ checkfolder = sys.argv[1]
 # host = config.get('ad_host')
 #share = config.get('share_folder','fileshare')
 #json_location = config.get('output_file','fileshare')
+
 
 burpserver = BurpServer(checkfolder)
 print burpserver.get_backup_stats()

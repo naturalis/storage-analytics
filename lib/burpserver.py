@@ -31,10 +31,11 @@ class BurpServer:
             stat = self.__get_folder_size(os.path.join(self.target,f))
             stat['backupname'] = f
             stat['backupserver'] = self.target_server
+            stat['extra_info'] = self.__get_backup_info(os.path.join(self.target,f))
             separate_sizes.append(stat)
             total_size = total_size + stat['size']
             total_count = total_count + stat['count']
-            
+
         return {'backuped_server': self.target_server, 'size' : total_size, 'count' : total_count, 'separate_sizes': separate_sizes }
 
 
