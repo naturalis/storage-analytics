@@ -87,7 +87,7 @@ class BurpServer:
             for c in content:
                 if any(c.startswith(x) for x in attributes):
                     key, val = c.split(':')
-                    extra_info[key] = val
+                    extra_info[key] = int(val.rstrip())
         return extra_info
 
 # def share_info(folder,c):
