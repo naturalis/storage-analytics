@@ -86,7 +86,7 @@ class BurpServer:
             content = f.readlines()
             for c in content:
                 if any(c.startswith(x) for x in attributes):
-                    key, val = c.split('')
+                    key, val = c.split(':')
                     extra_info[key] = val
         return extra_info
 
