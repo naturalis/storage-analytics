@@ -2,8 +2,9 @@
 
 import json, sys, os
 from lib.burpserver import BurpServer
-
-checkfolder = sys.argv[1]
+from lib import log
+import pprint
+#checkfolder = sys.argv[1]
 
 
 
@@ -17,10 +18,16 @@ checkfolder = sys.argv[1]
 # host = config.get('ad_host')
 #share = config.get('share_folder','fileshare')
 #json_location = config.get('output_file','fileshare')
+__BURP_MOUNT__ = '/mnt/backup/burpdata'
 
-
-burpserver = BurpServer(checkfolder)
-print burpserver.get_backup_stats()
+log.logger.info('Starting gathering data this backupserver')
+for d in os.listdir(__BURP_MOUNT__):
+    path = os.path.join(__BURP_MOUNT__,d)
+    if os.path.isdir(path):
+        log.logger.info('Gathering data of %s' % path)
+        burpserver = BurpServer(d)
+        stats = burpserver.get_backup_stats()
+        pprint.pprint(stats)
 # if c.bind():
 #     log.logger.info('Checking usage of share %s' % share)
 #     for d in os.listdir(share):
