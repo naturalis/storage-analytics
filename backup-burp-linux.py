@@ -5,7 +5,7 @@ from lib.burpserver import BurpServer
 from lib import log
 import pprint
 
-if len(sys.argv) != 1:
+if len(sys.argv) != 2:
     print 'ERROR: got invalid arguments. Got this: %s' % sys.argv
     print 'Usage: python backup-burp-linux.py <name of the backuped server>'
     sys.exit(1)
