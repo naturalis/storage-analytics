@@ -16,3 +16,6 @@ output_file = /var/log/storage-analytics.json
 
 [block_storage_cinder]
 output_file = /tmp/volumeinfo.json
+
+[backup-burp-linux]
+output_file = /var/log/storage-analytics.json
