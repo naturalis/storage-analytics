@@ -44,7 +44,7 @@ class BurpServer:
     def __get_number_of_backups(self):
         return len(self.__get_backup_folders)
 
-    def __get_backup_folders(self,exclude_folders=['current','working']):
+    def __get_backup_folders(self,exclude_folders=['current','working','finishing']):
         """
         Private
         Get backup folders
