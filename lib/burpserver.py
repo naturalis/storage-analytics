@@ -90,7 +90,8 @@ class BurpServer:
                         key, val = c.split(':')
                         extra_info[key] = int(val.rstrip())
         except Exception as e:
-            pass
+            log.logger.debug('Unable to open backup_stats')
+            log.logger.debug(e)
         return extra_info
 
 # def share_info(folder,c):
