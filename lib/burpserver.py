@@ -1,6 +1,6 @@
 import os, scandir, subprocess
 #from os.path import join, getsize, isfile, isdir, splitext
-#import socket, datetime
+import socket, datetime
 from . import log
 
 
@@ -36,9 +36,23 @@ class BurpServer:
             total_size = total_size + stat['size']
             total_count = total_count + stat['count']
 
-        return {'backuped_server': self.target_server, 'size' : total_size, 'count' : total_count, 'separate_sizes': separate_sizes }
-
-
+        json_dict = {'data_size':total_size,
+                 'timestamp': datetime.datetime.now().isoformat(),
+                 'data_amount': total_count,
+                 'host': self.target_server,
+                 'data_set': '',
+                 'data_groups': '',
+                 'data_owner': '',
+                 'storage_type': 'backup',
+                 'storage_pool': 'volumes',
+                 'storage_location': 'backup-cluster-001',
+                 'data_status': 'production',
+                 'data_host': self.target_server,
+                 'storage_path' : self.target,
+                 'data_service_tags' : [socket.gethostname().split('-')[0],socket.gethostname().split('-')[1]],
+                 'data_separate_sizes': separate_sizes
+                 }
+        return json_dict
 
 
     def __get_number_of_backups(self):
