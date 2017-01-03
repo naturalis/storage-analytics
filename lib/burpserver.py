@@ -16,10 +16,12 @@ class BurpServer:
         self.target_server = target_server
         self.root_folder = root_folder
         self.target = os.path.join(root_folder,target_server)
+        print self.target_server
+        print self.target
         log.logger.debug('%s Initialized' % self)
 
 
-    def get_backup_stats(self):
+    def get_backup_stats(self,separate=False):
         """
         Get sizes of backup of the initiated target server
         Return dict with total sizes and separate sizes of backups
@@ -27,19 +29,22 @@ class BurpServer:
         separate_sizes = []
         total_size = 0
         total_count = 0
+        service_tags = socket.gethostname().split('.')[0].split('-')[:2]
+        service_tags.append(self.target_server)
         for f in self.__get_backup_folders():
             stat = self.__get_folder_size(os.path.join(self.target,f))
             stat['backupname'] = f
             stat['backupserver'] = self.target_server
             stat['extra_info'] = self.__get_backup_info(os.path.join(self.target,f))
-            separate_sizes.append(stat)
+            if separate:
+                separate_sizes.append(stat)
             total_size = total_size + stat['size']
             total_count = total_count + stat['count']
 
         json_dict = {'data_size':total_size,
                  'timestamp': datetime.datetime.now().isoformat(),
                  'data_amount': total_count,
-                 'host': self.target_server,
+                 'host': socket.getfqdn(),
                  'data_set': '',
                  'data_groups': '',
                  'data_owner': '',
@@ -47,11 +52,12 @@ class BurpServer:
                  'storage_pool': 'volumes',
                  'storage_location': 'backup-cluster-001',
                  'data_status': 'production',
-                 'data_host': self.target_server,
+                 'data_host': socket.getfqdn(),
                  'storage_path' : self.target,
-                 'data_service_tags' : [socket.gethostname().split('-')[0],socket.gethostname().split('-')[1]],
-                 'data_separate_sizes': separate_sizes
+                 'data_service_tags' : service_tags
                  }
+        if separate:
+            json_dict['data_service_tags'] = separate_sizes
         return json_dict
 
 
