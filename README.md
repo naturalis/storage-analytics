@@ -201,7 +201,7 @@ The storage pool in Ceph:
   "data_service_tags": [ "fs", "smb", "fs-smb-006" ],
   "storage_id": "9c9ab56c-f079-4013-913f-20ef7a687749",
   "storage_path": "",
-  "storage_type": "database",
+  "storage_type": "backup",
   "storage_location": "primary-cluster-001",
   "storage_pool": "volumes"
 }
