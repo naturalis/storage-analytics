@@ -1,7 +1,7 @@
 from keystoneclient.auth.identity import v3
 from keystoneclient import session
 from cinderclient import client
-from . import log
+from utils import log
 
 
 

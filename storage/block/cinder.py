@@ -7,8 +7,8 @@ import json
 from lib.keystone import KeyStone
 from lib.nova import Nova
 from lib.cinder import Cinder
-from lib import log
-from lib import config
+from utils import log
+from utils import config
 
 
 #### Get settings from config

@@ -4,7 +4,8 @@ import json
 from datetime import date, timedelta, datetime
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-from lib import es, config
+from lib import es
+from utils import config
 
 
 # Support cost

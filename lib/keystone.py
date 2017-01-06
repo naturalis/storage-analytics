@@ -5,7 +5,7 @@ from os import urandom
 from string import ascii_letters, digits
 import random
 import time
-from . import log
+from utils import log
 import smtplib
 from email.mime.text import MIMEText
 

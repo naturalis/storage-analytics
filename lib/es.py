@@ -1,5 +1,5 @@
-from . import log
-from . import config
+from utils import log
+from utils import config
 from datetime import date, timedelta, datetime
 from elasticsearch import Elasticsearch
 

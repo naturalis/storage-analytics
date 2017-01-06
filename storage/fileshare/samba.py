@@ -2,9 +2,9 @@
 
 import json
 import os
-from lib import ad as ad
-from lib import log as log
-from lib import config as config
+from lib import ad
+from utils import log
+from utils import config
 from lib import fileshare as fs
 
 

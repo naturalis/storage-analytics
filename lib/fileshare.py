@@ -1,7 +1,7 @@
 import os, scandir, subprocess
 from os.path import join, getsize, isfile, isdir, splitext
 import socket, datetime, pprint
-from . import log
+from utils import log
 from . import ad
 
 
