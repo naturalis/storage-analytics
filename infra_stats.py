@@ -1,9 +1,4 @@
 #!/usr/bin/python2.7
-
-# Note about error handling
-# If you encounter an error, exit with a clear error message;
-# don't mess up the stats
-
 # Import all required libraries
 import json
 from datetime import date, timedelta, datetime
@@ -11,59 +6,12 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from lib import es, config
 
-# Connect to the infrastructure facts sheet
-scope = ['https://spreadsheets.google.com/feeds']
-credentials = ServiceAccountCredentials.from_json_keyfile_name(
-              config.get('credentials_json_location', 'infra_stats'), scope)
-gc = gspread.authorize(credentials)
-
-factsheet = gc.open_by_key(config.get('factsheet_key', 'infra_stats'))
-facts_worksheet = factsheet.worksheet('facts')
-
-cmdb = gc.open_by_key(config.get('cmdb_key', 'infra_stats'))
-hardware_worksheet = cmdb.worksheet('PhysicalHosts')
-
-# Put all cost in a nice dictionary
-facts = {}
-for item in facts_worksheet.get_all_records():
-    facts[item['expense']] = {'comment': item['comment'],
-                              'unit': item['unit'],
-                              'value': item['value']}
-
-# TODO: add a sheet for other investments apart from specific nodes
-# (i.e. separate hard disks)
-# Do the same with all investments
-# investments = {}
-# for item in investments_worksheet.get_all_records():
-#     investments[item['hardware']] = {'purchase_date': item['purchase_date'],
-#                                      'price': item['price'],
-#                                      'purpose': item['purpose']}
-
-# Do the same with all investments
-hardware = {}
-for item in hardware_worksheet.get_all_records():
-    hardware[item['barcode']] = {'purchase_date': item['purchase_date'],
-                                 'purchase_price': item['purchase_price'],
-                                 'role': item['role'],
-                                 'status': item['status'],
-                                 'units': item['units'],
-                                 'disk_hdd': item['disk_hdd'],
-                                 'disk_ssd': item['disk_ssd']}
-
-# Create stats dictionary for collection of all stats.
-stats = {}
-
-# Determine some constants
-# Writeoff time
-writeoff_time = timedelta(days=(facts['writeoff_years']['value']*365))
 
 # Support cost
 # TODO: Ask OpenStack API / Fuel about the current number of nodes
 # (and possibly some other facts)
 # TODO: Determine the number of storage nodes, compute nodes and management
 # nodes
-
-
 def get_number_of_nodes():
     """
     Calculate the number of nodes for:
@@ -106,8 +54,6 @@ def get_number_of_nodes():
     stats['nodes_compute'] = nodes_compute
 
 
-# Calculate cost for internal support
-# Get all relevant values and convert them to floats
 def get_cost_support_internal():
     """
     Calculate the daily cost for internal support for:
@@ -140,6 +86,7 @@ def get_cost_support_internal():
         365
     )
 
+    # TODO: candidate for a more generic, pure function
     cost_support_internal_storage = (
         cost_support_internal_total *
         (nodes_storage * support_internal_storage_weight) /
@@ -163,9 +110,13 @@ def get_cost_support_internal():
     stats['cost_support_internal_compute'] = cost_support_internal_compute
 
 
-# Calculate cost for external support
-# Get the cost per node from the spreadsheets
 def get_cost_support_external():
+    """
+    Calculate the daily cost for external support for:
+    * Storage
+    * Compute
+    And put the results in the stats dictionary
+    """
     support_external_per_node = (
         float(facts['support_external_per_node']['value'])
     )
@@ -200,9 +151,13 @@ def get_cost_support_external():
     stats['cost_support_external_compute'] = cost_support_external_compute
 
 
-# Rackspace cost
-# Get the annual cost per rack
 def get_cost_dc_rackspace():
+    """
+    Calculate the daily cost for rackspace for:
+    * Storage
+    * Compute
+    And put the results in the stats dictionary
+    """
     dc_rackspace_per_rack = float(facts['dc_rackspace_per_rack']['value'])
 
     dc_rackspace_racks = float(facts['dc_rackspace_racks']['value'])
@@ -483,10 +438,8 @@ def get_storage_size_bruto():
 
     for key, value in hardware.iteritems():
         if type(value["disk_ssd"]) is int and value['status'] != 'discarded':
-            print 'disk_ssd: ' + str(value['disk_ssd'])
             storage_size_bruto_ssd += value['disk_ssd']
         if type(value["disk_hdd"]) is int and value['status'] != 'discarded':
-            print 'disk_hdd: ' + str(value['disk_hdd'])
             storage_size_bruto_hdd += value['disk_hdd']
 
     storage_size_bruto_total = storage_size_bruto_ssd + storage_size_bruto_hdd
@@ -503,15 +456,8 @@ def get_cost_storage_per_type():
     data_size_netto_hdd = 260 * 1024
     data_size_netto_ssd = 10 * 1024
 
-    # data_size_netto_ssd = \
-    # data_size_netto * \
-    # (storage_size_bruto_ssd / \
-    # (storage_size_bruto_hdd + storage_size_bruto_ssd))
-    #
-    # data_size_netto_hdd = \
-    # data_size_netto * \
-    # (storage_size_bruto_hdd / \
-    # (storage_size_bruto_hdd + storage_size_bruto_ssd))
+    if cost_total_storage not in globals():
+        get_cost_total()
 
     cost_total_storage_ssd = (
         cost_total_storage *
@@ -571,7 +517,7 @@ def get_usage_storage():
     stats['data_fileshare_size_total'] = data_fileshare_size_total
     stats['data_fileshare_amount_total'] = data_fileshare_amount_total
 
-    # def get_usage_block_storage():
+    # Get usage for block storage
     global data_block_size_total
     global data_block_amount_total
     data_block_size_total = 0
@@ -587,12 +533,12 @@ def get_usage_storage():
     stats['data_block_size_total'] = data_block_size_total
     stats['data_block_amount_total'] = data_block_amount_total
 
-    # def get_usage_backup_storage():
+    # Get usage for backup storage
     global data_backup_size_total
     global data_backup_amount_total
+    global data_backup_stats
     data_backup_size_total = 0
     data_backup_amount_total = 0
-    global data_backup_stats
     data_backup_stats = es.get_latest_stats("storage_type", "backup", "storage_path")
     for stat in data_backup_stats:
         s = stat['newest_records']['hits']['hits'][0]['_source']['data_size']
@@ -602,10 +548,6 @@ def get_usage_storage():
 
     stats['data_backup_size_total'] = data_backup_size_total
     stats['data_backup_amount_total'] = data_backup_amount_total
-
-    # def get_usage_total_storage():
-    if 'nodes_total' not in globals():
-        get_number_of_nodes()
 
     data_size_total = (
         data_fileshare_size_total +
@@ -623,17 +565,65 @@ def get_usage_storage():
     stats['data_amount_total'] = data_amount_total
 
 
-# # Export the data to JSON
-# # Question: what to export exactly?
-# # Total cost
-# # Total power cost: split between storage, compute and the rest?
-# # Total rackspace cost: split between storage, compute and the rest?
-# #
-# # Daily price per bruto GB / Daily price per netto GB
+def get_infra_stats():
+    get_cost_total()
+    get_cost_storage_per_type()
+    get_usage_storage()
+    stats['timestamp'] = datetime.now().isoformat()
+    return stats
 
-# _JSON_LOCATION = '/tmp/stats.json'
-#
-# log.logger.info('Calculation storage cost')
-# with open(_JSON_LOCATION,'a') as jsonfile:
-#     json.dump((fs.ShareInfo(os.path.join(_SHARE,d),c)),jsonfile)
-#     jsonfile.write('\n')
+# Connect to the infrastructure facts sheet
+scope = ['https://spreadsheets.google.com/feeds']
+credentials = ServiceAccountCredentials.from_json_keyfile_name(
+              config.get('credentials_json_location', 'infra_stats'), scope)
+gc = gspread.authorize(credentials)
+
+factsheet = gc.open_by_key(config.get('factsheet_key', 'infra_stats'))
+facts_worksheet = factsheet.worksheet('facts')
+
+cmdb = gc.open_by_key(config.get('cmdb_key', 'infra_stats'))
+hardware_worksheet = cmdb.worksheet('PhysicalHosts')
+
+# Put all cost in a nice dictionary
+facts = {}
+for item in facts_worksheet.get_all_records():
+    facts[item['expense']] = {'comment': item['comment'],
+                              'unit': item['unit'],
+                              'value': item['value']}
+
+# TODO: add a sheet for other investments apart from specific nodes
+# (i.e. separate hard disks)
+# Do the same with all investments
+# investments = {}
+# for item in investments_worksheet.get_all_records():
+#     investments[item['hardware']] = {'purchase_date': item['purchase_date'],
+#                                      'price': item['price'],
+#                                      'purpose': item['purpose']}
+
+# Do the same with all investments
+hardware = {}
+for item in hardware_worksheet.get_all_records():
+    hardware[item['barcode']] = {'purchase_date': item['purchase_date'],
+                                 'purchase_price': item['purchase_price'],
+                                 'role': item['role'],
+                                 'status': item['status'],
+                                 'units': item['units'],
+                                 'disk_hdd': item['disk_hdd'],
+                                 'disk_ssd': item['disk_ssd']}
+
+# Create stats dictionary for collection of all stats.
+stats = {}
+
+# Determine some constants
+# Writeoff time
+writeoff_time = timedelta(days=(facts['writeoff_years']['value']*365))
+
+infra_stats = get_infra_stats()
+
+json_location = config.get('output_file', 'infra_stats')
+
+with open(json_location, 'a') as jsonfile:
+    # log.logger.debug('Writing stats of %s' % check_folder)
+    json.dump(infra_stats, jsonfile)
+    jsonfile.write('\n')
+    # log.logger.debug('Done writing file %s' % json_location)
