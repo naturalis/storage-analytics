@@ -19,3 +19,9 @@ output_file = /tmp/volumeinfo.json
 
 [backup-burp-linux]
 output_file = /var/log/storage-analytics.json
+
+[infra_stats]
+credentials_json_location = ./gspread-e34503164448.json
+cmdb_key = 5GmAJj9iiya4A69P31g8HhBPc6UdpB7MhY1mWWOeUwQI
+factsheet_key = R2MU5ZVjakX62vQ111VDd3x6du1pEvbMEVNXbOOTTYhI
+output_file = /tmp/infra-stats.json
