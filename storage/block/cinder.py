@@ -9,7 +9,7 @@ from lib.nova import Nova
 from lib.cinder import Cinder
 from utils import log
 from utils import config
-
+from keystoneclient.openstack.common.apiclient import exceptions as ksexc
 
 # Get settings from config
 auth_url = 'https://' + config.get('admin_endpoint_ip') + ':5000/v3'
@@ -30,8 +30,8 @@ keystone = KeyStone(auth_url_no_ssl, ks_username, ks_password,
                     project_name, ca_bundle)
 for p in keystone.list_projects():
     if p['id'] in project_ids_skip:
-        log.logger.debug('Excluding volumes in project %s with \
-        id %s' % (p['name'], p['id']))
+        log.logger.debug('Skipped: excluding volumes in project %s with \
+                          id %s' % (p['name'], p['id']))
     else:
         log.logger.debug('Checking volumes in project %s with \
         id %s' % (p['name'], p['id']))
@@ -59,9 +59,8 @@ for p in keystone.list_projects():
                     log.logger.debug('Writing json volume: %s' % v_i['name'])
                     json.dump(v_i, jsonfile)
                     jsonfile.write('\n')
-        except keystoneclient.openstack.common.apiclient.exceptions.Unauthorized:
-            log.logger.debuglog.logger.debug('Excluding volumes in project \
-            %s with id %s' % (p['name'], p['id']))
+        except except ksexc.Unauthorized:
+            log.logger.debug('Unauthorized: excluding volumes in project \
+                              %s with id %s' % (p['name'], p['id']))
         except:
-            log.logger.debuglog.logger.debug('Unexpected error: %s',
-                                             sys.exc_info()[0])
+            log.logger.debug('Unexpected error: %s', sys.exc_info()[0])
