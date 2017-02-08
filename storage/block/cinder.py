@@ -40,21 +40,28 @@ for p in keystone.list_projects():
         nova = Nova(auth_url_no_ssl, ks_username, ks_password,
                     p['id'], ca_bundle)
 
-        volume_info = cinder.get_volume_info()
-        for v_i in volume_info:
-            v_i['project_id'] = p['id']
-            v_i['project_name'] = p['name']
-            v_i['storage_type'] = 'block'
-            v_i['storage_location'] = 'primary-cluster-001'
-            v_i['storage_pool'] = 'volumes'
+        try:
+            volume_info = cinder.get_volume_info()
+            for v_i in volume_info:
+                v_i['project_id'] = p['id']
+                v_i['project_name'] = p['name']
+                v_i['storage_type'] = 'block'
+                v_i['storage_location'] = 'primary-cluster-001'
+                v_i['storage_pool'] = 'volumes'
 
-            if not v_i['attached_to_id'] == '':
-                v_i['attached_to_name'] = nova.get_server_name_from_id(
-                                          v_i['attached_to_id'])
-            else:
-                v_i['attached_to_name'] = ''
+                if not v_i['attached_to_id'] == '':
+                    v_i['attached_to_name'] = nova.get_server_name_from_id(
+                                              v_i['attached_to_id'])
+                else:
+                    v_i['attached_to_name'] = ''
 
-            with open(json_location, 'a') as jsonfile:
-                log.logger.debug('Writing json volume: %s' % v_i['name'])
-                json.dump(v_i, jsonfile)
-                jsonfile.write('\n')
+                with open(json_location, 'a') as jsonfile:
+                    log.logger.debug('Writing json volume: %s' % v_i['name'])
+                    json.dump(v_i, jsonfile)
+                    jsonfile.write('\n')
+        except keystoneclient.openstack.common.apiclient.exceptions.Unauthorized:
+            log.logger.debuglog.logger.debug('Excluding volumes in project \
+            %s with id %s' % (p['name'], p['id']))
+        except:
+            log.logger.debuglog.logger.debug('Unexpected error: %s',
+                                             sys.exc_info()[0])
