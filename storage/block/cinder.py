@@ -30,11 +30,11 @@ keystone = KeyStone(auth_url_no_ssl, ks_username, ks_password,
                     project_name, ca_bundle)
 for p in keystone.list_projects():
     if p['id'] in project_ids_skip:
-        log.logger.debug('Skipped: excluding volumes in project %s with \
-                          id %s' % (p['name'], p['id']))
+        log.logger.debug("Skipped: excluding volumes in project %s with "
+                         "id %s" % (p['name'], p['id']))
     else:
-        log.logger.debug('Checking volumes in project %s with \
-        id %s' % (p['name'], p['id']))
+        log.logger.debug("Checking volumes in project %s with id %s"
+                         % (p['name'], p['id']))
         cinder = Cinder(auth_url_no_ssl, ks_username, ks_password,
                         project_name, ca_bundle, p['id'])
         nova = Nova(auth_url_no_ssl, ks_username, ks_password,
@@ -60,7 +60,7 @@ for p in keystone.list_projects():
                     json.dump(v_i, jsonfile)
                     jsonfile.write('\n')
         except ksexc.Unauthorized:
-            log.logger.debug('Unauthorized: excluding volumes in project \
-                              %s with id %s' % (p['name'], p['id']))
+            log.logger.debug("Unauthorized: excluding volumes in project "
+                             "%s with id %s" % (p['name'], p['id']))
         except:
-            log.logger.debug('Unexpected error: %s', sys.exc_info()[0])
+            log.logger.debug("Unexpected error: %s", sys.exc_info()[0])
