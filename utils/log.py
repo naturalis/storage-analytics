@@ -2,7 +2,7 @@ import logging
 
 # Choose where to output your logs
 logtoconsole = True
-logtojournal = True
+logtojournal = False
 logtofile = True
 
 """
