@@ -59,7 +59,7 @@ for p in keystone.list_projects():
                     log.logger.debug('Writing json volume: %s' % v_i['name'])
                     json.dump(v_i, jsonfile)
                     jsonfile.write('\n')
-        except except ksexc.Unauthorized:
+        except ksexc.Unauthorized:
             log.logger.debug('Unauthorized: excluding volumes in project \
                               %s with id %s' % (p['name'], p['id']))
         except:
