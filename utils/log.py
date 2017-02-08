@@ -33,6 +33,6 @@ if logtofile:
     logger.addHandler(fh)
 
 if logtoconsole:
-    ch = logging.StreamHandler()
-    ch.setFormatter(formatter)
-    logger.addHandler(ch)
+    sh = logging.StreamHandler()
+    sh.setFormatter(formatter)
+    logger.addHandler(sh)
