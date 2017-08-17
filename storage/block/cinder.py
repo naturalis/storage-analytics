@@ -3,6 +3,7 @@
 # Script to get stats about block storage managed by OpenStack Cinder
 
 import json
+import sys
 
 from lib.keystone import KeyStone
 from lib.nova import Nova
@@ -25,6 +26,28 @@ project_ids_skip = ['baf09a7e28bf448092707fa9917f8aae',
 # End Settings
 # start API's
 
+"""
+{
+  "@timestamp": "2016-10-31T10:39:10.000Z",
+  "host": "fs-smb-006.ad.naturalis.nl",
+  "data_set": { "name": "Dikke schijf", "id": "" },
+  "data_status": "production",
+  "data_size": 13696468,
+  "data_amount": 13187,
+  "data_owner": { "name": "Automatisering", "id": "284f452a-618c-4583-b7c0-dc80dfe6bada" },
+  "data_groups": [
+    { "name": "Automatisering", "id": "284f452a-618c-4583-b7c0-dc80dfe6bada" },
+    { "name": "Infra", "id": "b3c146a8-2ec1-492e-ad8a-3ab42b9db34c" }
+  ],
+  "data_host": "primary-cluster-001",
+  "data_service_tags": [ "fs", "smb", "fs-smb-006" ],
+  "storage_id": "123223-dfea21-123435-123212",
+  "storage_path": "",
+  "storage_type": "block",
+  "storage_location": "primary-cluster-001",
+  "storage_pool": "volumes"
+}
+"""
 
 keystone = KeyStone(auth_url_no_ssl, ks_username, ks_password,
                     project_name, ca_bundle)
@@ -43,20 +66,28 @@ for p in keystone.list_projects():
         try:
             volume_info = cinder.get_volume_info()
             for v_i in volume_info:
-                v_i['project_id'] = p['id']
-                v_i['project_name'] = p['name']
+                v_i['storage_id'] = v_i['id']
+                v_i['data_owner'] = { "name" :  p['name'] , "id" : p['id'] }
+                v_i['data_groupts'] = { "name" :  p['name'] , "id" : p['id'] }
+                v_i['data_set'] = { "name" : v_i['name'], "id" : v_i['id'] }
                 v_i['storage_type'] = 'block'
+                v_i['storage_path'] = ''
+                v_i['data_amount'] = ''
+                v_i['data_size'] = v_i['size']
+                v_i['data_status'] = 'production'
                 v_i['storage_location'] = 'primary-cluster-001'
+                v_i['data_host'] = 'primary-cluster-001'
                 v_i['storage_pool'] = 'volumes'
 
                 if not v_i['attached_to_id'] == '':
-                    v_i['attached_to_name'] = nova.get_server_name_from_id(
+                    v_i['host'] = nova.get_server_name_from_id(
                                               v_i['attached_to_id'])
                 else:
-                    v_i['attached_to_name'] = ''
+                    v_i['host'] = 'Not Attached'
 
                 with open(json_location, 'a') as jsonfile:
-                    log.logger.debug('Writing json volume: %s' % v_i['name'])
+                    log.logger.debug('Writing json volume: %s' %
+                                     v_i['data_set']['name'])
                     json.dump(v_i, jsonfile)
                     jsonfile.write('\n')
         except ksexc.Unauthorized:
