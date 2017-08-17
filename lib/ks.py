@@ -90,11 +90,12 @@ def create_user(client, username, sync_group_id, to_address):
                             email=username+'@naturalis.nl',
                             password=pwd)
         uid = client.users.list(name=username)[0].id
-        client.users.add_to_group(uid,sync_group_id)
-        sendaccountmail(to_address,username,pwd)
+        client.users.add_to_group(uid, sync_group_id)
+        sendaccountmail(to_address, username, pwd)
         return True
     except Exception as e:
-        log.logger.error('Unable to create user %s OR add it to group. Error: %s' % (username,e))
+        log.logger.error("Unable to create user %s OR add it to group. Error: %s"
+                         % (username, e))
         return False
 
 
@@ -108,10 +109,10 @@ def enable_user(client, username):
 
     try:
         uid = client.users.list(name=username)[0].id
-        client.users.update(uid,enabled=True)
+        client.users.update(uid, enabled=True)
         return True
     except Exception as e:
-        log.logger.error('Unable to enable user %s. Error: %s' % (username,e))
+        log.logger.error('Unable to enable user %s. Error: %s' % (username, e))
         return False
 
 
@@ -125,10 +126,10 @@ def disable_user(client, username):
     try:
         desc = "disabled_at:%s" % time.strftime("%d.%m.%Y")
         uid = client.users.list(name=username)[0].id
-        client.users.update(uid,enabled=False,description=desc)
+        client.users.update(uid, enabled=False, description=desc)
         return True
     except Exception as e:
-        log.logger.error('Unable to disable user %s. Error: %s' % (username,e))
+        log.logger.error('Unable to disable user %s. Error: %s' % (username, e))
         return False
 
 
@@ -143,7 +144,7 @@ def create_group(client, groupname):
         client.groups.create(name=groupname)
         return True
     except Exception as e:
-        log.logger.error('Unable to create group %s. Error: %s' % (groupname,e))
+        log.logger.error('Unable to create group %s. Error: %s' % (groupname, e))
         return False
 
 
@@ -159,7 +160,7 @@ def delete_group(client, groupname):
         gobj = client.groups.delete(gid)
         return True
     except Exception as e:
-        log.logger.error('Unable to delete group %s. Error: %s' % (groupname,e))
+        log.logger.error('Unable to delete group %s. Error: %s' % (groupname, e))
         return False
 
 
@@ -174,10 +175,11 @@ def add_user_to_group(client, groupname, username):
     try:
         gid = client.groups.list(name=groupname)[0].id
         uid = client.users.list(name=username)[0].id
-        client.users.add_to_group(uid,gid)
+        client.users.add_to_group(uid, gid)
         return True
     except Exception as e:
-        log.logger.error('Unable to add %s group %s. Error: %s' % (username,groupname,e))
+        log.logger.error("Unable to add %s group %s. Error: %s"
+                         % (username, groupname, e))
         return False
 
 
@@ -192,10 +194,11 @@ def remove_user_from_group(client, groupname, username):
     try:
         gid = client.groups.list(name=groupname)[0].id
         uid = client.users.list(name=username)[0].id
-        client.users.remove_from_group(uid,gid)
+        client.users.remove_from_group(uid, gid)
         return True
     except Exception as e:
-        log.logger.error('Unable to remove %s group %s. Error: %s' % (username,groupname,e))
+        log.logger.error("Unable to remove %s group %s. Error: %s"
+                         % (username, groupname, e))
         return False
 
 
@@ -207,14 +210,16 @@ def sendaccountmail(to, username, password):
     * username
     * password
     """
-    text = "An stack.naturalis.nl account has been created for:\n username: %s\n password: %s" % (username,password)
+    text = ("An stack.naturalis.nl account has been created for:\n username: %s"
+            "\n password: %s" % (username, password))
     msg = MIMEText(text)
-    msg['Subject'] = 'stack.naturalis.nl account has been created for %s' % username
+    msg['Subject'] = ("stack.naturalis.nl account has been created for %s"
+                      % username)
     msg['From'] = 'noreply@naturalis.nl'
     msg['To'] = to
 
     s = smtplib.SMTP('aspmx.l.google.com')
-    s.sendmail('noreply@naturalis.nl',[to],msg.as_string())
+    s.sendmail('noreply@naturalis.nl', [to], msg.as_string())
     s.quit()
 
 

@@ -55,7 +55,8 @@ def get_latest_stats_old(filterfield, query, uniqfield,
     Gather the latest statitics from Elasticsearch
     * Name of field to query on
     * Phrase to query with
-    * Field that uniquely identifies the object for which to get the latest statistic
+    * Field that uniquely identifies the object for which to get the latest
+      statistic
     * Elasticsearch index to look for statistics (default = parsefailure-*)
     * Number of days back in time to look for stats (default = 2)
     Returns a dict with the latest statistics
@@ -105,9 +106,10 @@ def get_latest_stats(filterfield, query, uniqfield,
     Gather the latest statitics from Elasticsearch
     * Name of field to query on
     * Phrase to query with
-    * Field that uniquely identifies the object for which to get the latest statistic
+    * Field that uniquely identifies the object for which to get the latest
+      statistic
     * Elasticsearch index to look for statistics (default = parsefailure-*)
-    * Number of days back in time to look for stats (default = 2)
+    * Number of days back in time to look for stats (default = 14)
     Returns a dict with the latest statistics
     """
     elastic = Elasticsearch(['localhost'], port=9200)
@@ -169,9 +171,10 @@ def get_latest_stats_must(filterfield, query, uniqfield,
     Gather the latest statitics from Elasticsearch
     * Name of field to query on
     * Phrase to query with
-    * Field that uniquely identifies the object for which to get the latest statistic
+    * Field that uniquely identifies the object for which to get the latest
+      statistic
     * Elasticsearch index to look for statistics (default = parsefailure-*)
-    * Number of days back in time to look for stats (default = 2)
+    * Number of days back in time to look for stats (default = 14)
     Returns a dict with the latest statistics
     """
     elastic = Elasticsearch(['localhost'], port=9200)
@@ -194,6 +197,7 @@ def get_latest_stats_must(filterfield, query, uniqfield,
                 "_source": {
                   "includes": [
                     "data_size",
+                    "data_amount",
                     uniqfield
                   ]
                 }
