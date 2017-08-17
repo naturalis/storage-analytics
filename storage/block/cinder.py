@@ -86,11 +86,11 @@ for p in keystone.list_projects():
                     v_i['host'] = 'Not Attached'
 
                 # cleanup
-                fields = ['attached_to_id', 'status', 'name', 'id']
+                fields = ['attached_to_id', 'status', 'name', 'id','size']
                 for field in fields:
                     del v_i[field]
 
-                            
+
                 with open(json_location, 'a') as jsonfile:
                     log.logger.debug('Writing json volume: %s' %
                                      v_i['data_set']['name'])
