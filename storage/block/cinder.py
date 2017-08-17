@@ -68,7 +68,7 @@ for p in keystone.list_projects():
             for v_i in volume_info:
                 v_i['storage_id'] = v_i['id']
                 v_i['data_owner'] = { "name" :  p['name'] , "id" : p['id'] }
-                v_i['data_groupts'] = { "name" :  p['name'] , "id" : p['id'] }
+                v_i['data_groups'] = { "name" :  p['name'] , "id" : p['id'] }
                 v_i['data_set'] = { "name" : v_i['name'], "id" : v_i['id'] }
                 v_i['storage_type'] = 'block'
                 v_i['storage_path'] = ''
@@ -85,6 +85,12 @@ for p in keystone.list_projects():
                 else:
                     v_i['host'] = 'Not Attached'
 
+                # cleanup
+                fields = ['attached_to_id', 'status', 'name', 'id']
+                for field in fields:
+                    del v_i[field]
+
+                            
                 with open(json_location, 'a') as jsonfile:
                     log.logger.debug('Writing json volume: %s' %
                                      v_i['data_set']['name'])
