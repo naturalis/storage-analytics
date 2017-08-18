@@ -2,8 +2,7 @@
 
 # Script to get stats about block storage managed by OpenStack Cinder
 
-import json
-import sys
+import json, sys , datetime
 
 from lib.keystone import KeyStone
 from lib.nova import Nova
@@ -78,6 +77,7 @@ for p in keystone.list_projects():
                 v_i['storage_location'] = 'primary-cluster-001'
                 v_i['data_host'] = 'primary-cluster-001'
                 v_i['storage_pool'] = 'volumes'
+                v_i['timestamp'] = datetime.datetime.now().isoformat()
 
                 if not v_i['attached_to_id'] == '':
                     v_i['host'] = nova.get_server_name_from_id(
