@@ -27,15 +27,16 @@ def openstack_groups(conn):
     """
     groups = []
     conn.search(attributes=['Name'],
-                    search_scope=LEVEL,
-                    search_base='ou=OpenStack,ou=Resources,ou=Groepen,dc=nnm,dc=local',
-                    search_filter='(objectclass=group)')
+                search_scope=LEVEL,
+                search_base='ou=OpenStack,ou=Resources,ou=Groepen,dc=nnm,dc=local',
+                search_filter='(objectclass=group)')
     for g in conn.entries:
         if str(g['Name'])[:12] == 'Openstack - ':
             groups.append(str(g['Name']))
         else:
             log.logger.warning("%s is not a good group name. Should start with 'Openstack - '" % g['Name'])
     return groups
+
 
 def openstack_users(conn):
     """

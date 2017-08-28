@@ -4,8 +4,8 @@ import json
 import sys
 import os
 from lib.burpserver import BurpServer
-from lib import log
-from lib import config
+from utils import log
+from utils import config
 # import pprint
 
 # IMPORTANT. FIELDS STILL NEED RENAMING!

@@ -5,11 +5,12 @@ from os import urandom
 from string import ascii_letters, digits
 import random
 import time
-from . import log
+from utils import log
 import smtplib
 from email.mime.text import MIMEText
 
-def connect(auth_url,ks_username,ks_password,project_name):
+
+def connect(auth_url, ks_username, ks_password, project_name):
     """
     Generates a keystone client session object. Takes:
     * Keystone V3 auth url
@@ -29,7 +30,8 @@ def connect(auth_url,ks_username,ks_password,project_name):
 
     return client.Client(session=sess)
 
-def user_exists(client,username):
+
+def user_exists(client, username):
     """
     Checks if user exists. Takes:
     * keystone client object
@@ -38,7 +40,8 @@ def user_exists(client,username):
     """
     return len(client.users.list(name=username)) != 0
 
-def user_enabled(client,username):
+
+def user_enabled(client, username):
     """
     Checks if user is enabled. Takes:
     * keystone client object
@@ -48,8 +51,7 @@ def user_enabled(client,username):
     return client.users.list(name=username)[0].enabled
 
 
-
-def get_id_ks_group(client,grp):
+def get_id_ks_group(client, grp):
     """
     Find id of a keystone group. Takes:
     * keystone client object
@@ -60,6 +62,7 @@ def get_id_ks_group(client,grp):
         return client.groups.list(name=grp)[0].id
     except:
         return False
+
 
 def generate_password(numbers=10):
     """
@@ -72,7 +75,7 @@ def generate_password(numbers=10):
     return ''.join(random.choice(chars) for i in range(numbers))
 
 
-def create_user(client,username,sync_group_id,to_address):
+def create_user(client, username, sync_group_id, to_address):
     """
     Creates user in keystone. Takes:
     * keystone client object
@@ -87,14 +90,16 @@ def create_user(client,username,sync_group_id,to_address):
                             email=username+'@naturalis.nl',
                             password=pwd)
         uid = client.users.list(name=username)[0].id
-        client.users.add_to_group(uid,sync_group_id)
-        sendaccountmail(to_address,username,pwd)
+        client.users.add_to_group(uid, sync_group_id)
+        sendaccountmail(to_address, username, pwd)
         return True
     except Exception as e:
-        log.logger.error('Unable to create user %s OR add it to group. Error: %s' % (username,e))
+        log.logger.error("Unable to create user %s OR add it to group. Error: %s"
+                         % (username, e))
         return False
 
-def enable_user(client,username):
+
+def enable_user(client, username):
     """
     enables user in keystone. Takes:
     * keystone client object
@@ -104,13 +109,14 @@ def enable_user(client,username):
 
     try:
         uid = client.users.list(name=username)[0].id
-        client.users.update(uid,enabled=True)
+        client.users.update(uid, enabled=True)
         return True
     except Exception as e:
-        log.logger.error('Unable to enable user %s. Error: %s' % (username,e))
+        log.logger.error('Unable to enable user %s. Error: %s' % (username, e))
         return False
 
-def disable_user(client,username):
+
+def disable_user(client, username):
     """
     disables user in keystone. Takes:
     * keystone client object
@@ -120,13 +126,14 @@ def disable_user(client,username):
     try:
         desc = "disabled_at:%s" % time.strftime("%d.%m.%Y")
         uid = client.users.list(name=username)[0].id
-        client.users.update(uid,enabled=False,description=desc)
+        client.users.update(uid, enabled=False, description=desc)
         return True
     except Exception as e:
-        log.logger.error('Unable to disable user %s. Error: %s' % (username,e))
+        log.logger.error('Unable to disable user %s. Error: %s' % (username, e))
         return False
 
-def create_group(client,groupname):
+
+def create_group(client, groupname):
     """
     Creates group in keystone. Takes:
     * keystone client object
@@ -137,10 +144,11 @@ def create_group(client,groupname):
         client.groups.create(name=groupname)
         return True
     except Exception as e:
-        log.logger.error('Unable to create group %s. Error: %s' % (groupname,e))
+        log.logger.error('Unable to create group %s. Error: %s' % (groupname, e))
         return False
 
-def delete_group(client,groupname):
+
+def delete_group(client, groupname):
     """
     Deletes group in keystone. Takes:
     * keystone client object
@@ -152,10 +160,11 @@ def delete_group(client,groupname):
         gobj = client.groups.delete(gid)
         return True
     except Exception as e:
-        log.logger.error('Unable to delete group %s. Error: %s' % (groupname,e))
+        log.logger.error('Unable to delete group %s. Error: %s' % (groupname, e))
         return False
 
-def add_user_to_group(client,groupname,username):
+
+def add_user_to_group(client, groupname, username):
     """
     Adds user to group in keystone, Takes:
     * keystone client object
@@ -166,13 +175,15 @@ def add_user_to_group(client,groupname,username):
     try:
         gid = client.groups.list(name=groupname)[0].id
         uid = client.users.list(name=username)[0].id
-        client.users.add_to_group(uid,gid)
+        client.users.add_to_group(uid, gid)
         return True
     except Exception as e:
-        log.logger.error('Unable to add %s group %s. Error: %s' % (username,groupname,e))
+        log.logger.error("Unable to add %s group %s. Error: %s"
+                         % (username, groupname, e))
         return False
 
-def remove_user_from_group(client,groupname,username):
+
+def remove_user_from_group(client, groupname, username):
     """
     Remove user to group in keystone, Takes:
     * keystone client object
@@ -183,13 +194,15 @@ def remove_user_from_group(client,groupname,username):
     try:
         gid = client.groups.list(name=groupname)[0].id
         uid = client.users.list(name=username)[0].id
-        client.users.remove_from_group(uid,gid)
+        client.users.remove_from_group(uid, gid)
         return True
     except Exception as e:
-        log.logger.error('Unable to remove %s group %s. Error: %s' % (username,groupname,e))
+        log.logger.error("Unable to remove %s group %s. Error: %s"
+                         % (username, groupname, e))
         return False
 
-def sendaccountmail(to,username,password):
+
+def sendaccountmail(to, username, password):
     """
     Send an email to a email adress which contains
     the username and pass of the created user. Takes:
@@ -197,15 +210,18 @@ def sendaccountmail(to,username,password):
     * username
     * password
     """
-    text = "An stack.naturalis.nl account has been created for:\n username: %s\n password: %s" % (username,password)
+    text = ("An stack.naturalis.nl account has been created for:\n username: %s"
+            "\n password: %s" % (username, password))
     msg = MIMEText(text)
-    msg['Subject'] = 'stack.naturalis.nl account has been created for %s' % username
+    msg['Subject'] = ("stack.naturalis.nl account has been created for %s"
+                      % username)
     msg['From'] = 'noreply@naturalis.nl'
     msg['To'] = to
 
     s = smtplib.SMTP('aspmx.l.google.com')
-    s.sendmail('noreply@naturalis.nl',[to],msg.as_string())
+    s.sendmail('noreply@naturalis.nl', [to], msg.as_string())
     s.quit()
+
 
 def list_projects(client):
     """
