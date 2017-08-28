@@ -1,7 +1,7 @@
 import os, scandir, subprocess
 from os.path import join, getsize, isfile, isdir, splitext
 import socket, datetime, pprint
-from utils import log
+from . import log
 from . import ad
 
 
@@ -92,12 +92,14 @@ def _get_share_type(folder):
     * Path of dir
     Returns string with type
     """
-    share_type = subprocess.Popen(['net','rpc','share','list','-U','anomynous','-P','nopass'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    share_type = subprocess.Popen(['smbclient','-L', 'localhost','-m=SMB3','-N','-g'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     out, err = share_type.communicate()
     share_tp = []
     for i in out.split('\n'):
-        if i[-1:] is not '$' or not i.strip():
-            share_tp.append(i)
+        if i.startswith('Disk'):
+            i = i.split('|')
+            if not i[1].endswith('$'):
+                share_tp.append(i[1])
     return share_tp[0]
 
 def _get_folder_owner(folder,share_type):
