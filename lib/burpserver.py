@@ -48,7 +48,7 @@ class BurpServer:
                      'data_amount': total_count,
                      'host': socket.getfqdn(),
                      'data_set': '',
-                     'data_groups': '',
+                     'data_groups': [],
                      'data_owner': '',
                      'storage_type': 'backup',
                      'storage_pool': 'volumes',

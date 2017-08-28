@@ -67,7 +67,7 @@ for p in keystone.list_projects():
             for v_i in volume_info:
                 v_i['storage_id'] = v_i['id']
                 v_i['data_owner'] = { "name" :  p['name'] , "id" : p['id'] }
-                v_i['data_groups'] = { "name" :  p['name'] , "id" : p['id'] }
+                v_i['data_groups'] = [{ "name" :  p['name'] , "id" : p['id'] }]
                 v_i['data_set'] = { "name" : v_i['name'], "id" : v_i['id'] }
                 v_i['storage_type'] = 'block'
                 v_i['storage_path'] = ''
