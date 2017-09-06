@@ -576,7 +576,7 @@ def get_infra_stats():
 # Connect to the infrastructure facts sheet
 scope = ['https://spreadsheets.google.com/feeds']
 credentials = ServiceAccountCredentials.from_json_keyfile_name(
-              config.get('credentials_json_location', 'infra_stats'), scope)
+              config.get('google_credentials', 'infra_stats'), scope)
 gc = gspread.authorize(credentials)
 
 factsheet = gc.open_by_key(config.get('factsheet_key', 'infra_stats'))
