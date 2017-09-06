@@ -70,8 +70,8 @@ for p in keystone.list_projects():
                 v_i['data_groups'] = [{ "name" :  p['name'] , "id" : p['id'] }]
                 v_i['data_set'] = { "name" : v_i['name'], "id" : v_i['id'] }
                 v_i['storage_type'] = 'block'
-                v_i['storage_path'] = ''
-                v_i['data_amount'] = ''
+                v_i['storage_path'] = None
+                v_i['data_amount'] = None
                 v_i['data_size'] = v_i['size']
                 v_i['data_status'] = 'production'
                 v_i['storage_location'] = 'primary-cluster-001'
