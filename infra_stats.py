@@ -511,9 +511,11 @@ def get_usage_storage():
                                                "fileshare", "storage_path")
     for stat in data_fileshare_stats:
         s = stat['newest_records']['hits']['hits'][0]['_source']['data_size']
-        data_fileshare_size_total += s
+        if type(s) == int:
+            data_fileshare_size_total += s
         a = stat['newest_records']['hits']['hits'][0]['_source']['data_amount']
-        data_fileshare_amount_total += a
+        if type(a) == int:
+            data_fileshare_amount_total += a
 
     stats['data_fileshare_size_total'] = data_fileshare_size_total
     stats['data_fileshare_amount_total'] = data_fileshare_amount_total
@@ -527,9 +529,11 @@ def get_usage_storage():
     data_block_stats = es.get_latest_stats("storage_type", "block", "data_set.id")
     for stat in data_block_stats:
         s = stat['newest_records']['hits']['hits'][0]['_source']['data_size']
-        data_block_size_total += s
+        if type(s) == int:
+            data_block_size_total += s
         a = stat['newest_records']['hits']['hits'][0]['_source']['data_amount']
-        data_block_amount_total += a
+        if type(a) == int:
+            data_block_amount_total += a
 
     stats['data_block_size_total'] = data_block_size_total
     stats['data_block_amount_total'] = data_block_amount_total
@@ -543,9 +547,11 @@ def get_usage_storage():
     data_backup_stats = es.get_latest_stats("storage_type", "backup", "storage_path")
     for stat in data_backup_stats:
         s = stat['newest_records']['hits']['hits'][0]['_source']['data_size']
-        data_backup_size_total += s
+        if type(s) == int:
+            data_backup_size_total += s
         a = stat['newest_records']['hits']['hits'][0]['_source']['data_amount']
-        data_backup_amount_total += a
+        if type(a) == int:
+            data_backup_amount_total += a
 
     stats['data_backup_size_total'] = data_backup_size_total
     stats['data_backup_amount_total'] = data_backup_amount_total
