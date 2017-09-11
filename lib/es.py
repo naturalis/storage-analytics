@@ -4,8 +4,12 @@ from datetime import date, timedelta, datetime
 from elasticsearch import Elasticsearch
 
 
+
+elastic_host = config.get('elastic_host')
+elastic_port = config.get('elastic_port')
+
 def all_stats():
-    elastic = Elasticsearch(['localhost'], port=9200)
+    elastic = Elasticsearch([elastic_host], port=elastic_port)
     stats = elastic.search(index="logstash-default-*", body={
       "size": 1000,
       "query": {
@@ -21,7 +25,7 @@ def all_stats():
 
 
 def agg_stats():
-    elastic = Elasticsearch(['localhost'], port=9200)
+    elastic = Elasticsearch([elastic_host], port=elastic_port)
     stats = elastic.search(index="logstash-default-*", body={
       "size": 1000,
       "aggs": {
@@ -61,7 +65,7 @@ def get_latest_stats_old(filterfield, query, uniqfield,
     * Number of days back in time to look for stats (default = 2)
     Returns a dict with the latest statistics
     """
-    elastic = Elasticsearch(['localhost'], port=9200)
+    elastic = Elasticsearch([elastic_host], port=elastic_port)
     stats = elastic.search(index=es_index, body={
       "size": 10000,
       "query": {
@@ -112,7 +116,7 @@ def get_latest_stats(filterfield, query, uniqfield,
     * Number of days back in time to look for stats (default = 14)
     Returns a dict with the latest statistics
     """
-    elastic = Elasticsearch(['localhost'], port=9200)
+    elastic = Elasticsearch([elastic_host], port=elastic_port)
     stats = elastic.search(index="logstash-default-*", body={
       "aggs": {
         "agg_" + uniqfield: {
@@ -177,7 +181,7 @@ def get_latest_stats_must(filterfield, query, uniqfield,
     * Number of days back in time to look for stats (default = 14)
     Returns a dict with the latest statistics
     """
-    elastic = Elasticsearch(['localhost'], port=9200)
+    elastic = Elasticsearch([elastic_host], port=elastic_port)
     stats = elastic.search(index="logstash-default-*", body={
       "aggs": {
         "agg_" + uniqfield: {
