@@ -3,10 +3,9 @@ from utils import config
 from datetime import date, timedelta, datetime
 from elasticsearch import Elasticsearch
 
-
-
 elastic_host = config.get('elastic_host')
 elastic_port = config.get('elastic_port')
+
 
 def all_stats():
     elastic = Elasticsearch([elastic_host], port=elastic_port)
@@ -54,7 +53,7 @@ def agg_stats():
 
 
 def get_latest_stats_old(filterfield, query, uniqfield,
-                         es_index="logstash-default-*", days=14):
+                         es_index="infra-analytics-*", days=14):
     """
     Gather the latest statitics from Elasticsearch
     * Name of field to query on
@@ -105,7 +104,7 @@ def get_latest_stats_old(filterfield, query, uniqfield,
 
 
 def get_latest_stats(filterfield, query, uniqfield,
-                     es_index="logstash-default-*", days=14):
+                     es_index="infra-analytics-*", days=14):
     """
     Gather the latest statitics from Elasticsearch
     * Name of field to query on
@@ -131,13 +130,7 @@ def get_latest_stats(filterfield, query, uniqfield,
                    {"@timestamp": {"order": "desc"}}
                  ],
                  "size": 1,
-                 "_source": {
-                   "includes": [
-                     "data_size",
-                     "data_amount",
-                     uniqfield
-                   ]
-                 }
+                 "_source": {}
                }
              }
            }

@@ -2,6 +2,7 @@
 # Import all required libraries
 import json
 from datetime import date, timedelta, datetime
+from time import gmtime, strftime
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from lib import es
@@ -571,13 +572,68 @@ def get_usage_storage():
     stats['data_size_total'] = data_size_total
     stats['data_amount_total'] = data_amount_total
 
+def update_storage_datapoints():
+    """Update the analytics index with the latest available storage stats.
+
+    In order to be able to visualize the infra statitics in Kibana, this
+    function queries the temporary Elastic index for the last available
+    datapoint on every storage object, applies the same timestamp to all
+    datapoints and outputs them to a JSON file so Filebeat can pick them up.
+    """
+    json_location = config.get('output_file', 'infra_stats')
+    latest = []
+    latest_block = es.get_latest_stats("storage_type",
+                                       "block",
+                                       "data_set.id",
+                                       es_index="logstash-default-*",
+                                       days=14)
+    for d in latest_block:
+        doc = d['newest_records']['hits']['hits'][0]['_source']
+        doc['@timestamp'] = strftime("%Y-%m-%dT06:00:00.000Z", gmtime())
+        doc['fields']['type'] = 'infra-analytics'
+        latest.append(doc)
+    latest_fileshare = es.get_latest_stats("storage_type",
+                                           "fileshare",
+                                           "storage_path",
+                                           es_index="logstash-default-*",
+                                           days=14)
+    for d in latest_fileshare:
+        doc = d['newest_records']['hits']['hits'][0]['_source']
+        doc['@timestamp'] = strftime("%Y-%m-%dT06:00:00.000Z", gmtime())
+        doc['fields']['type'] = 'infra-analytics'
+        latest.append(doc)
+    latest_backup = es.get_latest_stats("storage_type",
+                                        "backup",
+                                        "storage_path",
+                                        es_index="logstash-default-*",
+                                        days=14)
+    for d in latest_backup:
+        doc = d['newest_records']['hits']['hits'][0]['_source']
+        doc['@timestamp'] = strftime("%Y-%m-%dT06:00:00.000Z", gmtime())
+        doc['fields'] = {}
+        doc['fields']['type'] = 'infra-analytics'
+        latest.append(doc)
+    with open(json_location, 'a') as jsonfile:
+        # log.logger.debug('Writing stats of %s' % check_folder)
+        for l in latest:
+            json.dump(l, jsonfile)
+            jsonfile.write('\n')
+            # log.logger.debug('Done writing file %s' % json_location)
 
 def get_infra_stats():
     get_cost_total()
     get_cost_storage_per_type()
     get_usage_storage()
-    stats['timestamp'] = datetime.now().isoformat()
-    return stats
+    stats['@timestamp'] = datetime.now().isoformat()
+    stats['fields'] = {}
+    stats['fields']['type'] = 'infra-analytics'
+    json_location = config.get('output_file', 'infra_stats')
+    with open(json_location, 'a') as jsonfile:
+        # log.logger.debug('Writing stats of %s' % check_folder)
+        json.dump(stats, jsonfile)
+        jsonfile.write('\n')
+        # log.logger.debug('Done writing file %s' % json_location)
+        #return stats
 
 # Connect to the infrastructure facts sheet
 scope = ['https://spreadsheets.google.com/feeds']
@@ -618,19 +674,14 @@ for item in hardware_worksheet.get_all_records():
                                  'disk_hdd': item['disk_hdd'],
                                  'disk_ssd': item['disk_ssd']}
 
-# Create stats dictionary for collection of all stats.
-stats = {}
-
 # Determine some constants
 # Writeoff time
 writeoff_time = timedelta(days=(facts['writeoff_years']['value']*365))
 
-infra_stats = get_infra_stats()
+# Create stats dictionary for collection of all stats.
+stats = {}
 
-json_location = config.get('output_file', 'infra_stats')
+#infra_stats = get_infra_stats()
+update_storage_datapoints()
+get_infra_stats()
 
-with open(json_location, 'a') as jsonfile:
-    # log.logger.debug('Writing stats of %s' % check_folder)
-    json.dump(infra_stats, jsonfile)
-    jsonfile.write('\n')
-    # log.logger.debug('Done writing file %s' % json_location)
