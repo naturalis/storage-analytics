@@ -621,7 +621,7 @@ def get_infra_stats():
     get_cost_total()
     get_cost_storage_per_type()
     get_usage_storage()
-    stats['@timestamp'] = datetime.now().isoformat()
+    stats['@timestamp'] = strftime("%Y-%m-%dT06:00:00.000Z", gmtime())
     stats['fields'] = {}
     stats['fields']['infra-analytics'] = True
     json_location = config.get('output_file', 'infra_stats')
