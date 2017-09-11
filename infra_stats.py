@@ -589,8 +589,6 @@ def update_storage_datapoints():
                                        days=14)
     for d in latest_block:
         doc = d['newest_records']['hits']['hits'][0]['_source']
-        doc['@timestamp'] = strftime("%Y-%m-%dT06:00:00.000Z", gmtime())
-        doc['fields']['type'] = 'storage-datapoint'
         latest.append(doc)
     latest_fileshare = es.get_latest_stats("storage_type",
                                            "fileshare",
@@ -599,8 +597,6 @@ def update_storage_datapoints():
                                            days=14)
     for d in latest_fileshare:
         doc = d['newest_records']['hits']['hits'][0]['_source']
-        doc['@timestamp'] = strftime("%Y-%m-%dT06:00:00.000Z", gmtime())
-        doc['fields']['type'] = 'storage-datapoint'
         latest.append(doc)
     latest_backup = es.get_latest_stats("storage_type",
                                         "backup",
@@ -609,14 +605,15 @@ def update_storage_datapoints():
                                         days=14)
     for d in latest_backup:
         doc = d['newest_records']['hits']['hits'][0]['_source']
-        doc['@timestamp'] = strftime("%Y-%m-%dT06:00:00.000Z", gmtime())
-        doc['fields'] = {}
-        doc['fields']['type'] = 'storage-datapoint'
         latest.append(doc)
     with open(json_location, 'a') as jsonfile:
         # log.logger.debug('Writing stats of %s' % check_folder)
-        for l in latest:
-            json.dump(l, jsonfile)
+        for doc in latest:
+            doc['@timestamp'] = strftime("%Y-%m-%dT06:00:00.000Z", gmtime())
+            doc['fields'] = {}
+            doc['fields']['infra-analytics'] = True
+            doc.pop('message', None)
+            json.dump(doc, jsonfile)
             jsonfile.write('\n')
             # log.logger.debug('Done writing file %s' % json_location)
 
@@ -626,7 +623,7 @@ def get_infra_stats():
     get_usage_storage()
     stats['@timestamp'] = datetime.now().isoformat()
     stats['fields'] = {}
-    stats['fields']['type'] = 'infra-stat-datapoint'
+    stats['fields']['infra-analytics'] = True
     json_location = config.get('output_file', 'infra_stats')
     with open(json_location, 'a') as jsonfile:
         # log.logger.debug('Writing stats of %s' % check_folder)
