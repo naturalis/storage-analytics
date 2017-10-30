@@ -18,6 +18,7 @@ output_file = /var/log/storage-analytics.json
 
 [block_storage_cinder]
 output_file = /tmp/volumeinfo.json
+storage_location = primary-cluster-001
 
 [backup-burp-linux]
 output_file = /var/log/storage-analytics.json

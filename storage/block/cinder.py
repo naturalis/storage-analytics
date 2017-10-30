@@ -74,8 +74,10 @@ for p in keystone.list_projects():
                 v_i['data_amount'] = None
                 v_i['data_size'] = v_i['size']
                 v_i['data_status'] = 'production'
-                v_i['storage_location'] = 'primary-cluster-001'
-                v_i['data_host'] = 'primary-cluster-001'
+                v_i['storage_location'] = config.get('storage_location',
+                                                     'block_storage_cinder')
+                v_i['data_host'] = config.get('storage_location',
+                                              'block_storage_cinder')
                 v_i['storage_pool'] = 'volumes'
                 v_i['timestamp'] = datetime.datetime.now().isoformat()
 
