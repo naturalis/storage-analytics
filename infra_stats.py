@@ -452,11 +452,12 @@ def get_storage_size_bruto():
 
 
 def get_cost_storage_per_type():
+    # Relative reference prices of storage types
     price_ssd = 0.170
     price_hdd = 0.040
 
-    data_size_netto_hdd = 260 * 1024
-    data_size_netto_ssd = 10 * 1024
+    data_size_netto_hdd = data_block_size_total / 1024**3
+    data_size_netto_ssd = 33 * 1024
 
     if cost_total_storage not in globals():
         get_cost_total()
@@ -619,8 +620,8 @@ def update_storage_datapoints():
 
 def get_infra_stats():
     get_cost_total()
-    get_cost_storage_per_type()
     get_usage_storage()
+    get_cost_storage_per_type()
     stats['@timestamp'] = strftime("%Y-%m-%dT06:00:00.000Z", gmtime())
     stats['fields'] = {}
     stats['fields']['infra-analytics'] = True
