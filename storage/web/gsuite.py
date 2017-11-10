@@ -75,6 +75,7 @@ def main():
                      'storage_type': 'web',
                      'storage_location': 'google',
                      'data_status': 'production',
+                     'fields': {'infra-analytics': True}
                      }
             for i in user[u'parameters']:
                 if i[u'name'] == u'accounts:gmail_used_quota_in_mb':
