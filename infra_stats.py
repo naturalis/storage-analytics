@@ -560,7 +560,7 @@ def get_usage_storage():
     # Get usage for web storage
     global data_web_size_total
     data_web_size_total = 0
-    data_web_stats = es.get_latest_stats("storage_type", "web", "storage_path")
+    data_web_stats = es.get_latest_stats("storage_type", "web", "data_set.name")
     for stat in data_web_stats:
         s = stat['newest_records']['hits']['hits'][0]['_source']['data_size']
         if type(s) == int:
