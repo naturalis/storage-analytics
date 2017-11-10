@@ -75,11 +75,11 @@ def main():
                      'storage_type': 'web',
                      'storage_location': 'google',
                      'data_status': 'production',
-                     'fields': {'infra-analytics': True}
+                     'fields': {'type': 'storage'}
                      }
             for i in user[u'parameters']:
                 if i[u'name'] == u'accounts:gmail_used_quota_in_mb':
-                    json_dict['data_set'] = re.sub('@.*',
+                    json_dict['data_set']['name'] = re.sub('@.*',
                                                    '@mail.google.com',
                                                    user[u'entity'][u'userEmail'])
                     json_dict['data_service_tags'] = ['gsuite', 'gmail',
@@ -88,7 +88,7 @@ def main():
                     json.dump(json_dict, jsonfile)
                     jsonfile.write('\n')
                 elif i[u'name'] == u'accounts:drive_used_quota_in_mb':
-                    json_dict['data_set'] = re.sub('@.*',
+                    json_dict['data_set']['name'] = re.sub('@.*',
                                                    '@drive.google.com',
                                                    user[u'entity'][u'userEmail'])
                     json_dict['data_service_tags'] = ['gsuite', 'drive',
@@ -97,7 +97,7 @@ def main():
                     json.dump(json_dict, jsonfile)
                     jsonfile.write('\n')
                 elif i[u'name'] == u'accounts:gplus_photos_used_quota_in_mb':
-                    json_dict['data_set'] = re.sub('@.*',
+                    json_dict['data_set']['name'] = re.sub('@.*',
                                                    '@photos.google.com',
                                                    user[u'entity'][u'userEmail'])
                     json_dict['data_service_tags'] = ['gsuite', 'photos',
