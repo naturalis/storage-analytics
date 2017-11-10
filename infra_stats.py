@@ -543,7 +543,6 @@ def get_usage_storage():
     # Get usage for backup storage
     global data_backup_size_total
     global data_backup_amount_total
-    global data_backup_stats
     data_backup_size_total = 0
     data_backup_amount_total = 0
     data_backup_stats = es.get_latest_stats("storage_type", "backup", "storage_path")
@@ -560,8 +559,6 @@ def get_usage_storage():
 
     # Get usage for web storage
     global data_web_size_total
-    global data_web_amount_total
-    global data_web_stats
     data_web_size_total = 0
     data_web_stats = es.get_latest_stats("storage_type", "web", "storage_path")
     for stat in data_web_stats:
