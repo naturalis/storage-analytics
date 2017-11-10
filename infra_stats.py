@@ -558,10 +558,24 @@ def get_usage_storage():
     stats['data_backup_size_total'] = data_backup_size_total
     stats['data_backup_amount_total'] = data_backup_amount_total
 
+    # Get usage for web storage
+    global data_web_size_total
+    global data_web_amount_total
+    global data_web_stats
+    data_web_size_total = 0
+    data_web_stats = es.get_latest_stats("storage_type", "web", "storage_path")
+    for stat in data_web_stats:
+        s = stat['newest_records']['hits']['hits'][0]['_source']['data_size']
+        if type(s) == int:
+            data_web_size_total += s
+
+    stats['data_web_size_total'] = data_web_size_total
+
     data_size_total = (
         data_fileshare_size_total +
         data_block_size_total +
-        data_backup_size_total
+        data_backup_size_total +
+        data_web_size_total
     )
 
     data_amount_total = (
