@@ -72,7 +72,7 @@ def main():
                      'host': socket.getfqdn(),
                      'data_owner': {'name': user[u'entity'][u'userEmail'],
                                     'id': user[u'entity'][u'profileId']},
-                     'data_set': {}
+                     'data_set': {},
                      'storage_type': 'web',
                      'storage_location': 'google',
                      'data_status': 'production',
