@@ -607,6 +607,14 @@ def update_storage_datapoints():
     for d in latest_backup:
         doc = d['newest_records']['hits']['hits'][0]['_source']
         latest.append(doc)
+    latest_web = es.get_latest_stats("storage_type",
+                                        "web",
+                                        "data_set.name",
+                                        es_index="logstash-default-*",
+                                        days=14)
+    for d in latest_web:
+        doc = d['newest_records']['hits']['hits'][0]['_source']
+        latest.append(doc)
     with open(json_location, 'a') as jsonfile:
         # log.logger.debug('Writing stats of %s' % check_folder)
         for doc in latest:
