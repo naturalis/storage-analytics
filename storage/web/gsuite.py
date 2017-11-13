@@ -49,7 +49,8 @@ def main():
     d = datetime.today() - timedelta(days=4)
     ds = d.strftime("%Y-%m-%d")
     di = d.isoformat()
-    p = ("accounts:total_quota_in_mb,"
+    p = ("accounts:is_disabled,"
+         "accounts:total_quota_in_mb,"
          "accounts:used_quota_in_mb,"
          "accounts:gmail_used_quota_in_mb,"
          "accounts:drive_used_quota_in_mb,"
@@ -79,6 +80,11 @@ def main():
                      'fields': {'type': 'storage'}
                      }
             for i in user[u'parameters']:
+                if i[u'name'] == u'accounts:is_disabled':
+                    if i[u'boolValue'] == True:
+                        json_dict['data_owner']['status'] = "disabled"
+                    else
+                        json_dict['data_owner']['status'] = "active"
                 if i[u'name'] == u'accounts:gmail_used_quota_in_mb':
                     json_dict['data_set']['name'] = re.sub('@.*',
                                                    '@mail.google.com',

@@ -33,7 +33,7 @@ The total amount of files or objects that is part of the data set.
 
 ### `data_owner`
 
-The name and unique identifier of the primary owner within the organization of the data set.
+The name, unique identifier and status (active or disabled) of the primary owner of the data set within the organization.
 
 ### `data_groups`
 
@@ -95,7 +95,7 @@ The storage pool in Ceph:
   "data_status": "production",
   "data_size": 13696468,
   "data_amount": 13187,
-  "data_owner": { "name": "Automatisering", "id": "284f452a-618c-4583-b7c0-dc80dfe6bada" },
+  "data_owner": { "name": "Automatisering", "id": "284f452a-618c-4583-b7c0-dc80dfe6bada", "status": "active" },
   "data_groups": [
     { "name": "Automatisering", "id": "284f452a-618c-4583-b7c0-dc80dfe6bada" },
     { "name": "Infra", "id": "b3c146a8-2ec1-492e-ad8a-3ab42b9db34c" }
@@ -142,7 +142,7 @@ The storage pool in Ceph:
   "data_status": "production",
   "data_size": 13696468,
   "data_amount": 13187,
-  "data_owner": { "name": "Automatisering", "id": "284f452a-618c-4583-b7c0-dc80dfe6bada" },
+  "data_owner": { "name": "Automatisering", "id": "284f452a-618c-4583-b7c0-dc80dfe6bada", "status": "active"},
   "data_groups": [
     { "name": "Automatisering", "id": "284f452a-618c-4583-b7c0-dc80dfe6bada" },
     { "name": "Infra", "id": "b3c146a8-2ec1-492e-ad8a-3ab42b9db34c" }
@@ -168,7 +168,7 @@ The storage pool in Ceph:
   "data_status": "production",
   "data_size": 6566668,
   "data_amount": 13187,
-  "data_owner": { "name": "Software Development", "id": "bd46682b-73cb-4d96-a752-dc7cc03b02c6" },
+  "data_owner": { "name": "Software Development", "id": "bd46682b-73cb-4d96-a752-dc7cc03b02c6", "status": "active"  },
   "data_groups": [
     { "name": "Software Development", "id": "bd46682b-73cb-4d96-a752-dc7cc03b02c6" }
   ],
