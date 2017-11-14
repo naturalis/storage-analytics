@@ -83,7 +83,7 @@ def main():
                 if i[u'name'] == u'accounts:is_disabled':
                     if i[u'boolValue'] == True:
                         json_dict['data_owner']['status'] = "disabled"
-                    else
+                    else:
                         json_dict['data_owner']['status'] = "active"
                 if i[u'name'] == u'accounts:gmail_used_quota_in_mb':
                     json_dict['data_set']['name'] = re.sub('@.*',
