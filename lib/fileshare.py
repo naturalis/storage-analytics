@@ -43,7 +43,9 @@ def share_info(folder,c):
                  'data_status': 'production',
                  'data_host': socket.getfqdn(),
                  'storage_path': 'smb://%s/%s/%s' % (socket.getfqdn(),share_type,folder.split('/')[-1]),
-                 'data_service_tags': [socket.gethostname().split('-')[0],socket.gethostname().split('-')[1]]
+                 'data_service_tags': [socket.gethostname().split('-')[0], 
+                                       socket.gethostname().split('-')[1],
+                                       share_type]
                  }
     return json_dict
 
