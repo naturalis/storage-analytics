@@ -1,0 +1,11 @@
+{
+    "Label": "BucketSizeBytes",
+    "Datapoints": [
+        {
+            "Timestamp": "2019-01-09T10:24:00Z",
+            "Average": 76778870358.0,
+            "Unit": "Bytes"
+        }
+    ]
+}
+
